@@ -1,157 +1,221 @@
 import "server-only";
 
 import { readDb } from "./store";
+import { calculateFare } from "../pricing";
+import { BLOCKING_BOOKING_STATUSES } from "../constants/status";
+import { todayISO } from "../format";
+
+// ---------- Rules shared by pages and actions ----------
+
+// A bus is bookable only when its operator AND the bus itself are approved.
+export function isLive(bus, operator) {
+  return bus.status === "approved" && operator?.status === "approved";
+}
+
+export function busMatches(bus, criteria) {
+  const { city, passengers, type, amenities = [], ac } = criteria;
+  if (city && !bus.serviceCities.includes(city)) return false;
+  if (passengers && bus.seats < Number(passengers)) return false;
+  if (type && bus.type !== type) return false;
+  if (ac && !bus.ac) return false;
+  return amenities.every((a) => bus.amenities.includes(a));
+}
+
+// True when no pending/confirmed booking of this bus overlaps the dates.
+export function isAvailable(db, busId, startDate, endDate) {
+  return !db.bookings.some(
+    (b) =>
+      b.busId === busId &&
+      BLOCKING_BOOKING_STATUSES.includes(b.status) &&
+      b.startDate <= endDate &&
+      startDate <= b.endDate
+  );
+}
 
 // ---------- Public-safe shapes ----------
-// Customers must never see vendor contact details or registration numbers
-// before a booking is confirmed — that's what stops off-platform deals.
+// Customers never see the operator's name, phone or the registration number
+// before the operator confirms a booking. That keeps deals on the platform.
 
-function toPublicVehicle(vehicle, vendor) {
-  const { registrationNumber, documents, vendorId, ...rest } = vehicle;
-  return {
-    ...rest,
-    operator: {
-      id: vendor.id,
-      // Display a masked name only; the real name/phone is revealed after booking.
-      label: `Verified operator · ${vendor.city}`,
-      verified: vendor.status === "approved",
-    },
-  };
+function toPublicBus(bus, operator) {
+  const { registrationNumber, documents, operatorId, ...rest } = bus;
+  return { ...rest, operator: { label: `Verified operator · ${operator.city}` } };
 }
 
-// ---------- Matching ----------
-
-export function vehicleMatches(vehicle, criteria) {
-  const { city, passengers, type, amenities = [], ac } = criteria;
-  if (city && !vehicle.serviceCities.includes(city)) return false;
-  if (passengers && vehicle.seats < Number(passengers)) return false;
-  if (type && vehicle.type !== type) return false;
-  if (ac && !vehicle.ac) return false;
-  return amenities.every((a) => vehicle.amenities.includes(a));
-}
-
-function isListable(vehicle, vendorsById) {
-  const vendor = vendorsById.get(vehicle.vendorId);
-  return vehicle.status === "approved" && vendor?.status === "approved";
-}
-
-function indexVendors(db) {
-  return new Map(db.vendors.map((v) => [v.id, v]));
+function index(list) {
+  return new Map(list.map((x) => [x.id, x]));
 }
 
 // ---------- Customer-facing ----------
 
-export async function searchVehicles(criteria = {}) {
+// `trip` (optional) adds a fare and an availability flag to every bus.
+export async function searchBuses(criteria = {}, trip = null) {
   const db = await readDb();
-  const vendors = indexVendors(db);
-  return db.vehicles
-    .filter((v) => isListable(v, vendors) && vehicleMatches(v, criteria))
-    .sort((a, b) => a.ratePerKm - b.ratePerKm)
-    .map((v) => toPublicVehicle(v, vendors.get(v.vendorId)));
+  const operators = index(db.operators);
+  return db.buses
+    .filter((b) => isLive(b, operators.get(b.operatorId)) && busMatches(b, criteria))
+    .map((b) => ({
+      ...toPublicBus(b, operators.get(b.operatorId)),
+      fare: trip ? calculateFare(b, trip) : null,
+      available: trip ? isAvailable(db, b.id, trip.startDate, trip.endDate) : true,
+    }))
+    .sort((a, b) => Number(b.available) - Number(a.available) || (a.fare?.total ?? a.ratePerKm) - (b.fare?.total ?? b.ratePerKm));
 }
 
-export async function getPublicVehicle(id) {
+export async function getPublicBus(id, trip = null) {
   const db = await readDb();
-  const vendors = indexVendors(db);
-  const vehicle = db.vehicles.find((v) => v.id === id);
-  if (!vehicle || !isListable(vehicle, vendors)) return null;
-  return toPublicVehicle(vehicle, vendors.get(vehicle.vendorId));
+  const bus = db.buses.find((b) => b.id === id);
+  const operator = bus && db.operators.find((o) => o.id === bus.operatorId);
+  if (!bus || !isLive(bus, operator)) return null;
+  return {
+    ...toPublicBus(bus, operator),
+    fare: trip ? calculateFare(bus, trip) : null,
+    available: trip ? isAvailable(db, bus.id, trip.startDate, trip.endDate) : true,
+  };
 }
 
-export async function getEnquiryWithQuotes(id) {
+export async function getPlatformStats() {
   const db = await readDb();
-  const enquiry = db.enquiries.find((e) => e.id === id);
-  if (!enquiry) return null;
-  const vendors = indexVendors(db);
-
-  const quotes = db.quotes
-    .filter((q) => q.enquiryId === id)
-    .sort((a, b) => a.amount - b.amount)
-    .map((q) => {
-      const vendor = vendors.get(q.vendorId);
-      const vehicle = db.vehicles.find((v) => v.id === q.vehicleId);
-      const revealed = q.status === "accepted";
-      return {
-        ...q,
-        vehicle: vehicle && toPublicVehicle(vehicle, vendor),
-        // Contact details only after the customer has accepted this quote.
-        vendorContact: revealed
-          ? { name: vendor.name, contactName: vendor.contactName, phone: vendor.phone, email: vendor.email }
-          : null,
-      };
-    });
-
-  return { enquiry, quotes };
+  const operators = index(db.operators);
+  const live = db.buses.filter((b) => isLive(b, operators.get(b.operatorId)));
+  return {
+    operators: db.operators.filter((o) => o.status === "approved").length,
+    buses: live.length,
+    cities: new Set(live.flatMap((b) => b.serviceCities)).size,
+  };
 }
 
-// ---------- Vendor-facing ----------
-
-export async function getVendor(id) {
-  const db = await readDb();
-  return db.vendors.find((v) => v.id === id) ?? null;
+// Contacts are shared once the operator confirms.
+function contactsShared(booking) {
+  return booking.status === "confirmed" || booking.status === "completed";
 }
 
-export async function getVendorVehicles(vendorId) {
+export async function getCustomerBookings(customerId) {
   const db = await readDb();
-  return db.vehicles.filter((v) => v.vendorId === vendorId);
+  const buses = index(db.buses);
+  return db.bookings
+    .filter((b) => b.customerId === customerId)
+    .map((b) => ({ ...b, bus: buses.get(b.busId) && { title: buses.get(b.busId).title, type: buses.get(b.busId).type, seats: buses.get(b.busId).seats } }))
+    .sort((a, b) => b.startDate.localeCompare(a.startDate));
 }
 
-// Open enquiries that at least one of this vendor's approved vehicles can serve.
-// Customer contact details are stripped — vendors only see the requirement.
-export async function getMatchingEnquiries(vendorId) {
+export async function getCustomerBooking(id, customerId) {
   const db = await readDb();
-  const fleet = db.vehicles.filter((v) => v.vendorId === vendorId && v.status === "approved");
+  const booking = db.bookings.find((b) => b.id === id && b.customerId === customerId);
+  if (!booking) return null;
+  const bus = db.buses.find((b) => b.id === booking.busId);
+  const operator = db.operators.find((o) => o.id === booking.operatorId);
+  return {
+    ...booking,
+    bus: toPublicBus(bus, operator),
+    operatorContact: contactsShared(booking)
+      ? { businessName: operator.businessName, ownerName: operator.ownerName, phone: operator.phone, email: operator.email, registrationNumber: bus.registrationNumber }
+      : null,
+  };
+}
 
-  return db.enquiries
-    .filter((e) => e.status === "open")
-    .map((e) => {
-      const eligibleVehicles = fleet.filter((v) =>
-        vehicleMatches(v, {
-          city: e.pickupCity,
-          passengers: e.passengers,
-          type: e.vehicleType || undefined,
-          amenities: e.requiredAmenities,
-        })
-      );
-      const myQuote = db.quotes.find((q) => q.enquiryId === e.id && q.vendorId === vendorId);
-      const { customerName, phone, email, organisation, ...requirement } = e;
-      return { ...requirement, eligibleVehicles, myQuote };
-    })
-    .filter((e) => e.eligibleVehicles.length > 0)
+// ---------- Operator-facing ----------
+
+export async function getOperator(id) {
+  const db = await readDb();
+  return db.operators.find((o) => o.id === id) ?? null;
+}
+
+export async function getOperatorBuses(operatorId) {
+  const db = await readDb();
+  const operator = db.operators.find((o) => o.id === operatorId);
+  return db.buses
+    .filter((b) => b.operatorId === operatorId)
+    .map((b) => ({ ...b, live: isLive(b, operator) }))
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+export async function getOperatorBookings(operatorId) {
+  const db = await readDb();
+  const buses = index(db.buses);
+  const customers = index(db.customers);
+  return db.bookings
+    .filter((b) => b.operatorId === operatorId)
+    .map((b) => {
+      const customer = customers.get(b.customerId);
+      return {
+        ...b,
+        busTitle: buses.get(b.busId)?.title,
+        customer: contactsShared(b)
+          ? { name: customer.name, phone: customer.phone, email: customer.email }
+          : { name: customer.name.split(" ")[0] }, // first name only until confirmed
+      };
+    })
+    .sort((a, b) => a.startDate.localeCompare(b.startDate));
+}
+
+export async function getOperatorSummary(operatorId) {
+  const [buses, bookings] = await Promise.all([getOperatorBuses(operatorId), getOperatorBookings(operatorId)]);
+  const today = todayISO();
+  return {
+    buses,
+    bookings,
+    liveBuses: buses.filter((b) => b.live).length,
+    pendingBuses: buses.filter((b) => b.status === "pending").length,
+    requests: bookings.filter((b) => b.status === "pending"),
+    upcoming: bookings.filter((b) => b.status === "confirmed" && b.endDate >= today),
+    earnings: bookings.filter((b) => contactsShared(b)).reduce((sum, b) => sum + b.fare.total, 0),
+  };
 }
 
 // ---------- Admin ----------
 
 export async function getAdminOverview() {
   const db = await readDb();
+  const operators = index(db.operators);
   const count = (list, status) => list.filter((x) => x.status === status).length;
   return {
-    vendors: { total: db.vendors.length, pending: count(db.vendors, "pending") },
-    vehicles: { total: db.vehicles.length, pending: count(db.vehicles, "pending") },
-    enquiries: { total: db.enquiries.length, open: count(db.enquiries, "open") },
-    quotes: { total: db.quotes.length },
+    operators: { total: db.operators.length, pending: count(db.operators, "pending") },
+    buses: {
+      total: db.buses.length,
+      pending: count(db.buses, "pending"),
+      live: db.buses.filter((b) => isLive(b, operators.get(b.operatorId))).length,
+    },
+    bookings: {
+      total: db.bookings.length,
+      pending: count(db.bookings, "pending"),
+      value: db.bookings.filter((b) => contactsShared(b)).reduce((s, b) => s + b.fare.total, 0),
+    },
+    customers: db.customers.length,
   };
 }
 
-export async function getAllVendors() {
+export async function getAllOperators() {
   const db = await readDb();
-  return db.vendors
-    .map((v) => ({ ...v, vehicleCount: db.vehicles.filter((x) => x.vendorId === v.id).length }))
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  return db.operators
+    .map((o) => {
+      const own = db.buses.filter((b) => b.operatorId === o.id);
+      return { ...o, busCount: own.length, pendingBuses: own.filter((b) => b.status === "pending").length };
+    })
+    .sort((a, b) => Number(b.status === "pending") - Number(a.status === "pending") || b.createdAt.localeCompare(a.createdAt));
 }
 
-export async function getAllVehicles() {
+export async function getAllBuses() {
   const db = await readDb();
-  const vendors = indexVendors(db);
-  return db.vehicles
-    .map((v) => ({ ...v, vendorName: vendors.get(v.vendorId)?.name ?? "Unknown" }))
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const operators = index(db.operators);
+  return db.buses
+    .map((b) => {
+      const operator = operators.get(b.operatorId);
+      return { ...b, operatorName: operator?.businessName ?? "Unknown", operatorStatus: operator?.status, live: isLive(b, operator) };
+    })
+    .sort((a, b) => Number(b.status === "pending") - Number(a.status === "pending") || b.createdAt.localeCompare(a.createdAt));
 }
 
-export async function getAllEnquiries() {
+export async function getAllBookings() {
   const db = await readDb();
-  return db.enquiries
-    .map((e) => ({ ...e, quoteCount: db.quotes.filter((q) => q.enquiryId === e.id).length }))
+  const buses = index(db.buses);
+  const operators = index(db.operators);
+  const customers = index(db.customers);
+  return db.bookings
+    .map((b) => ({
+      ...b,
+      busTitle: buses.get(b.busId)?.title,
+      operatorName: operators.get(b.operatorId)?.businessName,
+      customerName: customers.get(b.customerId)?.name,
+    }))
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }

@@ -1,7 +1,9 @@
-import { STATUS_TONE } from "@/lib/constants/status";
+import { STATUS_TONE, STATUS_LABEL } from "@/lib/constants/status";
 import styles from "./Badge.module.css";
 
-export default function Badge({ children, tone, status }) {
+// `kind` picks friendly wording: "review" (operators/buses) or "booking".
+export default function Badge({ children, tone, status, kind }) {
   const resolved = tone ?? STATUS_TONE[status] ?? "neutral";
-  return <span className={`${styles.badge} ${styles[resolved]}`}>{children ?? status}</span>;
+  const label = children ?? STATUS_LABEL[kind]?.[status] ?? status;
+  return <span className={`${styles.badge} ${styles[resolved]}`}>{label}</span>;
 }

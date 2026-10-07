@@ -5,39 +5,47 @@ import { updateDb } from "@/lib/data/store";
 import { requireAdmin } from "@/lib/auth";
 import { str } from "@/lib/validation";
 
-const REVIEW_STATUSES = ["approved", "rejected", "pending"];
+const DECISIONS = ["approved", "rejected"];
 
-export async function setVendorStatus(formData) {
-  await requireAdmin();
-  const id = str(formData, "id");
-  const status = str(formData, "status");
-  if (!REVIEW_STATUSES.includes(status)) throw new Error("Invalid status");
-
-  await updateDb((db) => {
-    const vendor = db.vendors.find((v) => v.id === id);
-    if (!vendor) throw new Error("Vendor not found");
-    vendor.status = status;
-    vendor.reviewedAt = new Date().toISOString();
-  });
-
+function revalidateAll() {
   revalidatePath("/admin", "layout");
-  revalidatePath("/buses");
+  revalidatePath("/operator", "layout");
+  revalidatePath("/buses", "layout");
+  revalidatePath("/");
 }
 
-export async function setVehicleStatus(formData) {
+// One-time verification of a bus owner (documents, GST/PAN, a call).
+export async function setOperatorStatus(formData) {
   await requireAdmin();
   const id = str(formData, "id");
   const status = str(formData, "status");
-  if (!REVIEW_STATUSES.includes(status)) throw new Error("Invalid status");
+  if (!DECISIONS.includes(status)) throw new Error("Invalid status");
 
   await updateDb((db) => {
-    const vehicle = db.vehicles.find((v) => v.id === id);
-    if (!vehicle) throw new Error("Vehicle not found");
-    vehicle.status = status;
-    vehicle.reviewedAt = new Date().toISOString();
+    const operator = db.operators.find((o) => o.id === id);
+    if (!operator) throw new Error("Operator not found");
+    operator.status = status;
+    operator.reviewedAt = new Date().toISOString();
   });
+  revalidateAll();
+}
 
-  revalidatePath("/admin", "layout");
-  revalidatePath("/vendor", "layout");
-  revalidatePath("/buses");
+// Each bus is approved separately — only once its operator is approved.
+export async function setBusStatus(formData) {
+  await requireAdmin();
+  const id = str(formData, "id");
+  const status = str(formData, "status");
+  if (!DECISIONS.includes(status)) throw new Error("Invalid status");
+
+  await updateDb((db) => {
+    const bus = db.buses.find((b) => b.id === id);
+    if (!bus) throw new Error("Bus not found");
+    const operator = db.operators.find((o) => o.id === bus.operatorId);
+    if (status === "approved" && operator?.status !== "approved") {
+      throw new Error("Approve the operator before approving their buses");
+    }
+    bus.status = status;
+    bus.reviewedAt = new Date().toISOString();
+  });
+  revalidateAll();
 }

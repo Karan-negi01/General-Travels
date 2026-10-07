@@ -1,12 +1,12 @@
 import SiteHeader from "@/components/layout/SiteHeader";
-import SiteFooter from "@/components/layout/SiteFooter";
+import Footer from "@/components/layout/Footer";
 
 export default function SiteLayout({ children }) {
   return (
     <>
       <SiteHeader />
       <main>{children}</main>
-      <SiteFooter />
+      <Footer />
     </>
   );
 }

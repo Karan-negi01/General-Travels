@@ -36,19 +36,10 @@ export const CITIES = [
   "Ahmedabad",
 ];
 
+// Picking the same city for "from" and "to" makes it a local (within city) hire.
 export const TRIP_TYPES = [
-  { id: "one-way", label: "One way" },
   { id: "round-trip", label: "Round trip" },
-  { id: "local", label: "Local / within city" },
-  { id: "multi-day", label: "Multi-day tour" },
-];
-
-export const CUSTOMER_TYPES = [
-  { id: "corporate", label: "Corporate" },
-  { id: "government", label: "Government / Ministry" },
-  { id: "institution", label: "School / Hospital / Institution" },
-  { id: "event", label: "Event / Wedding" },
-  { id: "individual", label: "Individual / Family" },
+  { id: "one-way", label: "One way" },
 ];
 
 export function labelFor(list, id) {

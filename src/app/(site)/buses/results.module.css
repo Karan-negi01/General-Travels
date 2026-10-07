@@ -1,0 +1,124 @@
+.band {
+  padding: var(--space-7) 0 var(--space-6);
+  background:
+    radial-gradient(50% 90% at 90% 0%, rgb(198 161 91 / 0.16), transparent 60%),
+    var(--navy-900);
+  color: var(--on-dark-muted);
+}
+
+.title {
+  margin-top: var(--space-3);
+  font-size: clamp(1.9rem, 3.4vw, 2.75rem);
+  color: #fff;
+}
+
+.subtitle {
+  margin-top: var(--space-2);
+}
+
+.searchCard {
+  margin-top: var(--space-5);
+  padding: var(--space-5);
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  color: var(--text);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+  gap: var(--space-6);
+  align-items: start;
+  padding-top: var(--space-6);
+}
+
+.filters {
+  position: sticky;
+  top: 96px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.filterHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.filterHead h2 {
+  font-size: var(--text-xl);
+}
+
+.reset {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--gold-700);
+}
+
+.more summary {
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--border);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.more[open] summary {
+  margin-bottom: var(--space-3);
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.hintBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.resultsHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.resultsHead strong {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--navy-900);
+}
+
+.partnerNote {
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.partnerNote a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  color: var(--gold-700);
+}
+
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .filters {
+    position: static;
+    max-height: none;
+  }
+}

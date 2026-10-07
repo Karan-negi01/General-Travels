@@ -2,7 +2,7 @@ import "server-only";
 
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { seed } from "./seed";
+import { seed, SCHEMA_VERSION } from "./seed";
 
 // PoC persistence: a single JSON file in `.data/db.json`.
 // Every read/write in the app goes through this module, so swapping it for
@@ -18,16 +18,22 @@ const DB_FILE = path.join(DB_DIR, "db.json");
 // Serialise writes so concurrent server actions don't clobber each other.
 let writeQueue = Promise.resolve();
 
+async function reset() {
+  await fs.mkdir(DB_DIR, { recursive: true });
+  await fs.writeFile(DB_FILE, JSON.stringify(seed, null, 2));
+  return structuredClone(seed);
+}
+
 export async function readDb() {
+  let db;
   try {
-    const raw = await fs.readFile(DB_FILE, "utf8");
-    return JSON.parse(raw);
+    db = JSON.parse(await fs.readFile(DB_FILE, "utf8"));
   } catch (err) {
     if (err.code !== "ENOENT") throw err;
-    await fs.mkdir(DB_DIR, { recursive: true });
-    await fs.writeFile(DB_FILE, JSON.stringify(seed, null, 2));
-    return structuredClone(seed);
+    return reset();
   }
+  // A file from an older data model is replaced with fresh demo data.
+  return db.version === SCHEMA_VERSION ? db : reset();
 }
 
 // `mutator` receives the current db, mutates it in place, and may return a value.
@@ -44,4 +50,9 @@ export function updateDb(mutator) {
 
 export function newId(prefix) {
   return `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+}
+
+// Short human-friendly booking reference, e.g. "GT-7K3QX".
+export function newBookingRef() {
+  return `GT-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
 }

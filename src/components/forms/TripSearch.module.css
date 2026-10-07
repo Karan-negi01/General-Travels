@@ -1,0 +1,81 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.tripType {
+  display: inline-flex;
+  align-self: flex-start;
+  gap: 4px;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-muted);
+}
+
+.tripType input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tripType span {
+  display: block;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tripType input:checked + span {
+  background: var(--navy-900);
+  color: var(--gold-400);
+}
+
+.tripType input:focus-visible + span {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 2px;
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.bar .fields {
+  grid-template-columns: 1.1fr 1.1fr 1fr 1fr 0.8fr auto;
+  align-items: end;
+}
+
+.submit {
+  min-height: 46px;
+}
+
+.stack .fields {
+  grid-template-columns: 1fr 1fr;
+}
+
+.stack .submit {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1080px) {
+  .bar .fields {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .bar .fields,
+  .stack .fields {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bar .submit {
+    grid-column: 1 / -1;
+  }
+}

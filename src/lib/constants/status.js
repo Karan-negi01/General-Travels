@@ -1,37 +1,46 @@
-// Workflow statuses shared by the customer, vendor and admin interfaces.
+// Workflow statuses shared by the customer, operator and admin interfaces.
+//
+// Approval rules:
+//   - An operator (bus owner) is approved ONCE by admin.
+//   - Every bus is approved separately, and only after its operator is approved.
+//   - A bus is bookable ("live") only when both the operator and the bus are approved.
 
-export const VENDOR_STATUS = {
-  PENDING: "pending", // registered, documents under review
+export const REVIEW_STATUS = {
+  PENDING: "pending", // waiting for admin review
   APPROVED: "approved",
   REJECTED: "rejected",
 };
 
-export const VEHICLE_STATUS = {
-  PENDING: "pending", // awaiting admin review of photos/documents
-  APPROVED: "approved", // visible to customers, eligible for enquiries
-  REJECTED: "rejected",
+export const BOOKING_STATUS = {
+  PENDING: "pending", // customer booked, waiting for the operator to confirm
+  CONFIRMED: "confirmed", // operator confirmed; contacts are shared with both sides
+  DECLINED: "declined", // operator could not take the trip
+  CANCELLED: "cancelled", // customer cancelled
+  COMPLETED: "completed", // trip done
 };
 
-export const ENQUIRY_STATUS = {
-  OPEN: "open", // accepting quotes
-  BOOKED: "booked", // customer accepted a quote
-  CANCELLED: "cancelled",
-};
-
-export const QUOTE_STATUS = {
-  SUBMITTED: "submitted",
-  ACCEPTED: "accepted",
-  DECLINED: "declined", // another quote was accepted
-};
+// Bookings in these states hold the bus for their dates.
+export const BLOCKING_BOOKING_STATUSES = [BOOKING_STATUS.PENDING, BOOKING_STATUS.CONFIRMED];
 
 export const STATUS_TONE = {
   pending: "warning",
   approved: "success",
   rejected: "danger",
-  open: "info",
-  booked: "success",
+  confirmed: "success",
+  declined: "danger",
   cancelled: "neutral",
-  submitted: "info",
-  accepted: "success",
-  declined: "neutral",
+  completed: "info",
+  live: "success",
+};
+
+// Friendly wording per audience. Falls back to the raw status.
+export const STATUS_LABEL = {
+  review: { pending: "Under review", approved: "Approved", rejected: "Rejected" },
+  booking: {
+    pending: "Awaiting confirmation",
+    confirmed: "Confirmed",
+    declined: "Declined",
+    cancelled: "Cancelled",
+    completed: "Completed",
+  },
 };

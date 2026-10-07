@@ -1,0 +1,125 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgb(10 22 40 / 0.94);
+  backdrop-filter: saturate(140%) blur(12px);
+  border-bottom: 1px solid rgb(220 191 134 / 0.14);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  min-height: 72px;
+}
+
+.nav {
+  display: flex;
+  gap: var(--space-5);
+  margin-right: auto;
+}
+
+.link {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--on-dark-muted);
+  transition: color 0.15s;
+}
+
+.link:hover {
+  color: var(--gold-400);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.account {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid rgb(220 191 134 / 0.35);
+  border-radius: 999px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--gold-400);
+}
+
+.account:hover {
+  background: rgb(220 191 134 / 0.1);
+}
+
+.textButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--on-dark-muted);
+  cursor: pointer;
+}
+
+.textButton:hover {
+  color: var(--on-dark);
+}
+
+.mobile {
+  display: none;
+  position: relative;
+  margin-left: auto;
+}
+
+.mobile summary {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  color: var(--on-dark);
+  cursor: pointer;
+  list-style: none;
+}
+
+.mobile summary::-webkit-details-marker {
+  display: none;
+}
+
+.sheet {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  width: min(280px, calc(100vw - 32px));
+  padding: var(--space-5);
+  background: var(--navy-900);
+  border: 1px solid rgb(220 191 134 / 0.2);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  color: var(--on-dark);
+  font-weight: 600;
+}
+
+.sheet hr {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .nav,
+  .actions {
+    display: none;
+  }
+  .mobile {
+    display: block;
+  }
+}
