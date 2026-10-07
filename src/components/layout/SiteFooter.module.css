@@ -1,0 +1,31 @@
+.footer {
+  margin-top: var(--space-8);
+  padding: var(--space-7) 0;
+  background: var(--brand-900);
+  color: #c9d5e6;
+}
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+.brand {
+  font-weight: 800;
+  color: #fff;
+  font-size: var(--text-lg);
+}
+.tag {
+  margin-top: var(--space-2);
+  max-width: 40ch;
+  font-size: var(--text-sm);
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  font-size: var(--text-sm);
+}
+.links a:hover {
+  color: #fff;
+}
