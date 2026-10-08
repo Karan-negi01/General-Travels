@@ -6,17 +6,21 @@
 
 :root {
   /* Brand */
-  --navy-950: #050b18;
-  --navy-900: #0a1628;
-  --navy-800: #11203d;
-  --navy-700: #1a2f56;
-  --navy-600: #2b4473;
-  --gold-700: #8c6a2c;
-  --gold-600: #a8823a;
-  --gold-500: #c6a15b;
-  --gold-400: #dcbf86;
-  --gold-200: #efe2c4;
-  --gold-100: #f8f1e2;
+  /* Ink (text and dark UI) */
+  --navy-950: #0b1a33;
+  --navy-900: #13254a;
+  --navy-800: #1c3463;
+  --navy-700: #27457f;
+  --navy-600: #3a5a99;
+  /* Brand blue, from strong to pastel */
+  --accent-700: #1d4ed8;
+  --accent-600: #2563eb;
+  --accent-500: #3b82f6;
+  --accent-400: #60a5fa;
+  --accent-300: #a9c8fb;
+  --accent-200: #d3e3fd;
+  --accent-100: #eaf2ff;
+  --accent-50: #f5f9ff;
 
   /* Aliases used by components */
   --brand-900: var(--navy-900);
@@ -24,19 +28,16 @@
   --brand-700: var(--navy-700);
   --brand-600: var(--navy-600);
   --brand-100: #e9edf5;
-  --accent-600: var(--gold-600);
-  --accent-500: var(--gold-500);
-  --accent-100: var(--gold-100);
 
   /* Neutrals */
-  --bg: #f8f5ef;
+  --bg: #f6f9fe;
   --surface: #ffffff;
-  --surface-muted: #f3efe6;
-  --border: #e8e1d3;
-  --border-strong: #d5cbb7;
-  --text: #121a2c;
-  --text-muted: #5b6274;
-  --text-subtle: #8b909b;
+  --surface-muted: #f0f5fc;
+  --border: #e2e9f4;
+  --border-strong: #ccd7e8;
+  --text: #16213a;
+  --text-muted: #5a6780;
+  --text-subtle: #8a95a8;
   --on-dark: #f4efe4;
   --on-dark-muted: #aab3c5;
 
@@ -52,7 +53,7 @@
 
   /* Type */
   --font-sans: var(--font-manrope), system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --font-display: var(--font-manrope), system-ui, -apple-system, "Segoe UI", sans-serif;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
@@ -121,8 +122,8 @@ h4 {
 h1,
 h2 {
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 p {
@@ -140,12 +141,12 @@ img {
 }
 
 :focus-visible {
-  outline: 2px solid var(--gold-500);
+  outline: 2px solid var(--accent-500);
   outline-offset: 2px;
 }
 
 ::selection {
-  background: var(--gold-200);
+  background: var(--accent-200);
   color: var(--navy-900);
 }
 
@@ -191,7 +192,7 @@ img {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--gold-600);
+  color: var(--accent-600);
 }
 
 .eyebrow::before {
@@ -239,19 +240,27 @@ img {
 }
 
 .btn-primary {
-  background: linear-gradient(180deg, var(--gold-400), var(--gold-500));
-  border-color: var(--gold-500);
-  color: var(--navy-900);
-  box-shadow: 0 6px 18px rgb(198 161 91 / 0.28);
+  background: var(--accent-600);
+  border-color: var(--accent-600);
+  color: #fff;
+  box-shadow: 0 6px 16px rgb(37 99 235 / 0.22);
 }
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(180deg, var(--gold-500), var(--gold-600));
-  box-shadow: 0 8px 24px rgb(198 161 91 / 0.38);
+  background: var(--accent-700);
+  box-shadow: 0 8px 22px rgb(37 99 235 / 0.3);
+}
+
+.btn-white {
+  background: #fff;
+  color: var(--accent-700);
+}
+.btn-white:hover:not(:disabled) {
+  background: var(--accent-100);
 }
 
 .btn-secondary {
-  background: var(--navy-900);
-  color: var(--on-dark);
+  background: var(--navy-800);
+  color: #fff;
 }
 .btn-secondary:hover:not(:disabled) {
   background: var(--navy-700);
@@ -263,17 +272,18 @@ img {
   color: var(--text);
 }
 .btn-outline:hover:not(:disabled) {
-  border-color: var(--navy-900);
+  border-color: var(--accent-500);
+  color: var(--accent-700);
 }
 
 .btn-ghost {
   background: transparent;
-  border-color: rgb(244 239 228 / 0.28);
-  color: var(--on-dark);
+  border-color: rgb(255 255 255 / 0.6);
+  color: #fff;
 }
 .btn-ghost:hover:not(:disabled) {
-  border-color: var(--gold-400);
-  color: var(--gold-400);
+  border-color: #fff;
+  background: rgb(255 255 255 / 0.1);
 }
 
 .btn-danger {
@@ -343,8 +353,8 @@ img {
 .select:focus,
 .textarea:focus {
   outline: none;
-  border-color: var(--gold-500);
-  box-shadow: 0 0 0 4px rgb(198 161 91 / 0.18);
+  border-color: var(--accent-500);
+  box-shadow: 0 0 0 4px rgb(59 130 246 / 0.18);
 }
 
 .field-error {

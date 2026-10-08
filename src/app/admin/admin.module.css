@@ -17,7 +17,7 @@
   padding: var(--space-5) var(--space-6);
   background: var(--surface);
   border: 1px solid var(--border);
-  border-top: 3px solid var(--gold-500);
+  border-top: 3px solid var(--accent-500);
   border-radius: var(--radius-lg);
 }
 
@@ -36,7 +36,7 @@
 .queueHead a {
   font-size: var(--text-sm);
   font-weight: 700;
-  color: var(--gold-700);
+  color: var(--accent-700);
   white-space: nowrap;
 }
 
@@ -45,7 +45,7 @@
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--gold-700);
+  color: var(--accent-700);
 }
 
 .item {

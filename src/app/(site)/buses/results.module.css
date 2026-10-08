@@ -1,15 +1,15 @@
 .band {
   padding: var(--space-7) 0 var(--space-6);
   background:
-    radial-gradient(50% 90% at 90% 0%, rgb(198 161 91 / 0.16), transparent 60%),
-    var(--navy-900);
-  color: var(--on-dark-muted);
+    radial-gradient(50% 90% at 90% 0%, rgb(59 130 246 / 0.14), transparent 60%),
+    linear-gradient(180deg, var(--accent-100), var(--bg));
+  color: var(--text-muted);
 }
 
 .title {
   margin-top: var(--space-3);
   font-size: clamp(1.9rem, 3.4vw, 2.75rem);
-  color: #fff;
+  color: var(--navy-900);
 }
 
 .subtitle {
@@ -57,7 +57,7 @@
 .reset {
   font-size: var(--text-sm);
   font-weight: 700;
-  color: var(--gold-700);
+  color: var(--accent-700);
 }
 
 .more summary {
@@ -110,7 +110,7 @@
   align-items: center;
   gap: 4px;
   font-weight: 700;
-  color: var(--gold-700);
+  color: var(--accent-700);
 }
 
 @media (max-width: 960px) {

@@ -33,12 +33,12 @@
 }
 
 .tripType input:checked + span {
-  background: var(--navy-900);
-  color: var(--gold-400);
+  background: var(--accent-600);
+  color: #fff;
 }
 
 .tripType input:focus-visible + span {
-  outline: 2px solid var(--gold-500);
+  outline: 2px solid var(--accent-500);
   outline-offset: 2px;
 }
 

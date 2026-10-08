@@ -9,24 +9,25 @@
   align-items: flex-start;
   gap: var(--space-3);
   padding: var(--space-4);
-  border: 1px solid rgb(255 255 255 / 0.08);
+  border: 1px solid var(--border);
+  background: var(--surface);
   border-radius: var(--radius);
   transition: border-color 0.15s, background 0.15s;
 }
 
 .role:hover {
-  border-color: rgb(220 191 134 / 0.4);
+  border-color: var(--accent-300);
 }
 
 .role svg {
   flex: none;
   margin-top: 2px;
-  color: var(--gold-400);
+  color: var(--accent-600);
 }
 
 .role strong {
   display: block;
-  color: var(--on-dark);
+  color: var(--text);
 }
 
 .role small {
@@ -34,8 +35,8 @@
 }
 
 .active {
-  border-color: var(--gold-500);
-  background: rgb(220 191 134 / 0.1);
+  border-color: var(--accent-500);
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.15);
 }
 
 .formWrap {
@@ -59,7 +60,7 @@
   align-items: center;
   gap: 4px;
   font-weight: 700;
-  color: var(--gold-700);
+  color: var(--accent-700);
 }
 
 .demo {
@@ -103,7 +104,7 @@
 }
 
 .demoButton:hover {
-  border-color: var(--gold-500);
+  border-color: var(--accent-500);
 }
 
 .demoButton strong {

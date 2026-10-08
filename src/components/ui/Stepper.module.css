@@ -23,7 +23,7 @@
 }
 
 .step.done:not(:last-child)::before {
-  background: var(--gold-500);
+  background: var(--accent-500);
 }
 
 .dot {
@@ -40,16 +40,16 @@
 }
 
 .done .dot {
-  border-color: var(--gold-500);
-  background: var(--gold-500);
-  color: var(--navy-900);
+  border-color: var(--accent-500);
+  background: var(--accent-500);
+  color: #fff;
 }
 
 .current .dot {
-  border-color: var(--navy-900);
-  background: var(--navy-900);
-  color: var(--gold-400);
-  box-shadow: 0 0 0 5px rgb(17 32 61 / 0.1);
+  border-color: var(--accent-600);
+  background: var(--accent-600);
+  color: #fff;
+  box-shadow: 0 0 0 5px rgb(37 99 235 / 0.14);
 }
 
 .blocked .dot {
@@ -74,27 +74,4 @@
   margin-top: 2px;
   font-size: var(--text-sm);
   color: var(--text-muted);
-}
-
-/* On navy panels */
-.onDark .step:not(:last-child)::before {
-  background: rgb(255 255 255 / 0.12);
-}
-.onDark .dot {
-  border-color: rgb(220 191 134 / 0.35);
-  background: transparent;
-  color: var(--on-dark-muted);
-}
-.onDark .current .dot {
-  border-color: var(--gold-500);
-  background: var(--gold-500);
-  color: var(--navy-900);
-  box-shadow: 0 0 0 5px rgb(198 161 91 / 0.2);
-}
-.onDark .title,
-.onDark .todo .title {
-  color: var(--on-dark);
-}
-.onDark .text {
-  color: var(--on-dark-muted);
 }

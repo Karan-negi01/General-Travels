@@ -23,13 +23,13 @@
 .sectionNum {
   font-family: var(--font-display);
   font-size: var(--text-lg);
-  color: var(--gold-600);
+  color: var(--accent-600);
 }
 
 .sectionTitle {
   font-family: var(--font-display);
   font-size: var(--text-xl);
-  font-weight: 600;
+  font-weight: 800;
 }
 
 .cityGrid {
@@ -57,8 +57,8 @@
 }
 
 .doc:has(input:checked) {
-  border-color: var(--gold-500);
-  background: var(--gold-100);
+  border-color: var(--accent-500);
+  background: var(--accent-100);
 }
 
 .doc input {

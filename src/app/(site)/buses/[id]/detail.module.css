@@ -97,7 +97,7 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--gold-700);
+  color: var(--accent-700);
 }
 
 .amenityList {
@@ -131,8 +131,8 @@
 .cities li {
   padding: 4px 12px;
   border-radius: 999px;
-  background: var(--gold-100);
-  color: var(--gold-700);
+  background: var(--accent-100);
+  color: var(--accent-700);
   font-size: var(--text-sm);
   font-weight: 600;
 }
@@ -160,7 +160,7 @@
   padding: var(--space-6);
   background: var(--surface);
   border: 1px solid var(--border);
-  border-top: 3px solid var(--gold-500);
+  border-top: 3px solid var(--accent-500);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
 }
@@ -191,7 +191,7 @@
 .panelTitle {
   font-family: var(--font-display);
   font-size: var(--text-xl);
-  font-weight: 600;
+  font-weight: 800;
   color: var(--navy-900);
 }
 
@@ -217,7 +217,7 @@
   width: max-content;
   font-size: var(--text-sm);
   font-weight: 700;
-  color: var(--gold-700);
+  color: var(--accent-700);
   cursor: pointer;
 }
 

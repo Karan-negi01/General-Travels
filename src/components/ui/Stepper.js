@@ -3,9 +3,9 @@ import { Check } from "lucide-react";
 import styles from "./Stepper.module.css";
 
 // Vertical progress tracker. Each step: { title, text, state: "done" | "current" | "todo" | "blocked", action? }
-export default function Stepper({ steps, tone = "light" }) {
+export default function Stepper({ steps }) {
   return (
-    <ol className={`${styles.steps} ${tone === "dark" ? styles.onDark : ""}`}>
+    <ol className={styles.steps}>
       {steps.map((step, i) => (
         <li key={step.title} className={`${styles.step} ${styles[step.state]}`}>
           <span className={styles.dot} aria-hidden="true">

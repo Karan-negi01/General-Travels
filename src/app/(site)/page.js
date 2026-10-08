@@ -138,7 +138,7 @@ export default async function HomePage() {
         <div className="container">
           <div className={styles.sectionHead}>
             <p className="eyebrow">Our promise</p>
-            <h2 className={`${styles.sectionTitle} ${styles.onDark}`}>Travel the way it should be</h2>
+            <h2 className={styles.sectionTitle}>Travel the way it should be</h2>
           </div>
           <div className={styles.promiseGrid}>
             {PROMISES.map(({ icon: Icon, title, text }) => (
@@ -155,12 +155,12 @@ export default async function HomePage() {
       <section className="container">
         <div className={styles.partner}>
           <div>
-            <p className="eyebrow">For bus owners</p>
+            <p className={`eyebrow ${styles.eyebrowLight}`}>For bus owners</p>
             <h2>Own buses or tempo travellers?</h2>
             <p>Register once, list every vehicle in your fleet and receive confirmed bookings from corporates, institutions and families. You set the rates.</p>
           </div>
           <div className={styles.partnerActions}>
-            <Link href="/become-a-partner" className="btn btn-primary btn-lg">List your bus</Link>
+            <Link href="/become-a-partner" className="btn btn-white btn-lg">List your bus</Link>
             <Link href="/login?role=operator" className="btn btn-ghost btn-lg">Operator sign in</Link>
           </div>
         </div>

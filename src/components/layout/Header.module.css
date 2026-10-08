@@ -2,9 +2,10 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgb(10 22 40 / 0.94);
+  background: rgb(255 255 255 / 0.94);
   backdrop-filter: saturate(140%) blur(12px);
-  border-bottom: 1px solid rgb(220 191 134 / 0.14);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 12px rgb(19 37 74 / 0.04);
 }
 
 .inner {
@@ -23,12 +24,12 @@
 .link {
   font-size: var(--text-sm);
   font-weight: 600;
-  color: var(--on-dark-muted);
+  color: var(--text-muted);
   transition: color 0.15s;
 }
 
 .link:hover {
-  color: var(--gold-400);
+  color: var(--accent-600);
 }
 
 .actions {
@@ -42,15 +43,16 @@
   align-items: center;
   gap: 6px;
   padding: 7px 14px;
-  border: 1px solid rgb(220 191 134 / 0.35);
+  border: 1px solid var(--accent-200);
   border-radius: 999px;
+  background: var(--accent-100);
   font-size: var(--text-sm);
   font-weight: 700;
-  color: var(--gold-400);
+  color: var(--accent-700);
 }
 
 .account:hover {
-  background: rgb(220 191 134 / 0.1);
+  border-color: var(--accent-300);
 }
 
 .textButton {
@@ -60,12 +62,12 @@
   font: inherit;
   font-size: var(--text-sm);
   font-weight: 600;
-  color: var(--on-dark-muted);
+  color: var(--text-muted);
   cursor: pointer;
 }
 
 .textButton:hover {
-  color: var(--on-dark);
+  color: var(--text);
 }
 
 .mobile {
@@ -80,7 +82,7 @@
   width: 42px;
   height: 42px;
   border-radius: 10px;
-  color: var(--on-dark);
+  color: var(--navy-900);
   cursor: pointer;
   list-style: none;
 }
@@ -99,18 +101,18 @@
   gap: var(--space-4);
   width: min(280px, calc(100vw - 32px));
   padding: var(--space-5);
-  background: var(--navy-900);
-  border: 1px solid rgb(220 191 134 / 0.2);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  color: var(--on-dark);
+  color: var(--text);
   font-weight: 600;
 }
 
 .sheet hr {
   width: 100%;
   border: 0;
-  border-top: 1px solid rgb(255 255 255 / 0.1);
+  border-top: 1px solid var(--border);
   margin: 0;
 }
 

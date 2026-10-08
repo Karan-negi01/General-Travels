@@ -4,10 +4,9 @@
   position: relative;
   padding: var(--space-8) 0 0;
   background:
-    radial-gradient(60% 70% at 85% 10%, rgb(198 161 91 / 0.18), transparent 60%),
-    radial-gradient(50% 60% at 0% 100%, rgb(43 68 115 / 0.5), transparent 70%),
-    linear-gradient(180deg, var(--navy-900), var(--navy-950));
-  color: var(--on-dark);
+    radial-gradient(55% 70% at 90% 0%, rgb(59 130 246 / 0.16), transparent 65%),
+    linear-gradient(180deg, var(--accent-100), var(--bg));
+  color: var(--text);
   overflow: hidden;
 }
 
@@ -34,21 +33,20 @@
   margin-top: var(--space-4);
   font-size: var(--text-3xl);
   line-height: 1.08;
-  color: #fff;
+  color: var(--navy-900);
 }
 
 .heroTitle em {
   display: block;
-  font-style: italic;
-  font-weight: 500;
-  color: var(--gold-400);
+  font-style: normal;
+  color: var(--accent-600);
 }
 
 .heroText {
   max-width: 52ch;
   margin-top: var(--space-5);
   font-size: var(--text-lg);
-  color: var(--on-dark-muted);
+  color: var(--text-muted);
 }
 
 .stats {
@@ -66,15 +64,15 @@
   font-size: var(--text-xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--on-dark-muted);
+  color: var(--text-muted);
 }
 
 .stats dd {
   margin: 0;
   font-family: var(--font-display);
   font-size: 2.25rem;
-  font-weight: 600;
-  color: var(--gold-400);
+  font-weight: 800;
+  color: var(--accent-600);
   line-height: 1.1;
 }
 
@@ -82,8 +80,8 @@
   position: relative;
   border-radius: var(--radius-xl);
   overflow: hidden;
-  border: 1px solid rgb(220 191 134 / 0.2);
-  box-shadow: 0 30px 80px rgb(0 0 0 / 0.45);
+  border: 1px solid var(--accent-200);
+  box-shadow: var(--shadow-lg);
   aspect-ratio: 5 / 3;
 }
 
@@ -105,10 +103,11 @@
   background: rgb(248 245 239 / 0.95);
   color: var(--navy-900);
   box-shadow: var(--shadow);
+  background: #fff;
 }
 
 .heroBadge svg {
-  color: var(--gold-600);
+  color: var(--accent-600);
 }
 
 .heroBadge strong {
@@ -156,9 +155,7 @@
   font-size: clamp(1.75rem, 3vw, 2.5rem);
 }
 
-.onDark {
-  color: #fff;
-}
+
 
 /* Roles */
 
@@ -179,12 +176,23 @@
 }
 
 .role:nth-child(2) {
-  background: var(--navy-900);
-  border-color: var(--navy-900);
-  color: var(--on-dark-muted);
+  background: var(--accent-600);
+  border-color: var(--accent-600);
+  color: rgb(255 255 255 / 0.85);
 }
 
-.role:nth-child(2) .roleTitle {
+.role:nth-child(2) .roleTitle,
+.role:nth-child(2) .roleWho,
+.role:nth-child(2) .roleStep {
+  color: #fff;
+}
+
+.role:nth-child(2) li::before {
+  background: #fff;
+}
+
+.role:nth-child(2) .roleIcon {
+  background: rgb(255 255 255 / 0.18);
   color: #fff;
 }
 
@@ -200,14 +208,14 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: var(--gold-100);
-  color: var(--gold-700);
+  background: var(--accent-100);
+  color: var(--accent-700);
 }
 
 .roleStep {
   font-family: var(--font-display);
   font-size: 2rem;
-  color: var(--gold-500);
+  color: var(--accent-500);
   opacity: 0.5;
 }
 
@@ -217,14 +225,14 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--gold-600);
+  color: var(--accent-600);
 }
 
 .roleTitle {
   margin-top: var(--space-2);
   font-family: var(--font-display);
   font-size: var(--text-xl);
-  font-weight: 600;
+  font-weight: 800;
 }
 
 .role ul {
@@ -249,7 +257,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--gold-500);
+  background: var(--accent-500);
 }
 
 .roleLink {
@@ -259,11 +267,11 @@
   margin-top: auto;
   font-size: var(--text-sm);
   font-weight: 700;
-  color: var(--gold-700);
+  color: var(--accent-700);
 }
 
 .role:nth-child(2) .roleLink {
-  color: var(--gold-400);
+  color: #fff;
 }
 
 /* Fleet */
@@ -303,7 +311,7 @@
 .fleetBody h3 {
   font-family: var(--font-display);
   font-size: var(--text-lg);
-  font-weight: 600;
+  font-weight: 800;
 }
 
 .fleetBody p {
@@ -317,8 +325,8 @@
   margin-top: var(--space-8);
   padding: var(--space-8) 0;
   background:
-    radial-gradient(50% 80% at 100% 0%, rgb(198 161 91 / 0.12), transparent 60%),
-    var(--navy-900);
+    radial-gradient(50% 80% at 100% 0%, rgb(59 130 246 / 0.1), transparent 60%),
+    var(--accent-100);
 }
 
 .promiseGrid {
@@ -329,19 +337,19 @@
 
 .promise {
   padding-top: var(--space-5);
-  border-top: 1px solid rgb(220 191 134 / 0.3);
-  color: var(--on-dark-muted);
+  border-top: 2px solid var(--accent-300);
+  color: var(--text-muted);
   font-size: var(--text-sm);
 }
 
 .promise svg {
-  color: var(--gold-400);
+  color: var(--accent-600);
 }
 
 .promise h3 {
   margin: var(--space-4) 0 var(--space-2);
   font-size: var(--text-lg);
-  color: #fff;
+  color: var(--navy-900);
 }
 
 /* Partner CTA */
@@ -356,9 +364,9 @@
   padding: var(--space-7);
   border-radius: var(--radius-xl);
   background:
-    radial-gradient(70% 120% at 100% 100%, rgb(198 161 91 / 0.22), transparent 60%),
-    var(--navy-950);
-  color: var(--on-dark-muted);
+    radial-gradient(70% 120% at 100% 100%, rgb(255 255 255 / 0.16), transparent 60%),
+    linear-gradient(135deg, var(--accent-600), var(--accent-700));
+  color: rgb(255 255 255 / 0.85);
 }
 
 .partner h2 {
@@ -369,6 +377,10 @@
 
 .partner p:last-child {
   max-width: 56ch;
+}
+
+.eyebrowLight {
+  color: #fff;
 }
 
 .partnerActions {

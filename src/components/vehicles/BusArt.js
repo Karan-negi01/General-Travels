@@ -37,8 +37,8 @@ export default function BusArt({ type, tone = "dark", className }) {
 
   const palette =
     tone === "dark"
-      ? { bg1: "#11203d", bg2: "#0a1628", body1: "#f6f1e6", body2: "#d9d0bd", road: "rgb(220 191 134 / 0.25)" }
-      : { bg1: "#f8f1e2", bg2: "#efe2c4", body1: "#ffffff", body2: "#e5dcc8", road: "rgb(140 106 44 / 0.25)" };
+      ? { bg1: "#dbe8fe", bg2: "#c3d7fb", body1: "#ffffff", body2: "#e3eaf6", road: "rgb(37 99 235 / 0.28)" }
+      : { bg1: "#f3f7ff", bg2: "#e1ebfd", body1: "#ffffff", body2: "#e3eaf6", road: "rgb(37 99 235 / 0.2)" };
 
   // The vehicle is always shown whole ("meet"); the background and road are
   // drawn far beyond the viewBox so any frame shape is filled edge to edge.
@@ -54,14 +54,14 @@ export default function BusArt({ type, tone = "dark", className }) {
           <stop offset="1" stopColor={palette.body2} />
         </linearGradient>
         <linearGradient id={`${id}-glass`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#2b4473" />
-          <stop offset="1" stopColor="#0a1628" />
+          <stop offset="0" stopColor="#3a5a99" />
+          <stop offset="1" stopColor="#13254a" />
         </linearGradient>
       </defs>
 
       <rect x="-1000" y="-500" width="2320" height="1150" fill={palette.bg2} />
       <rect x="-1000" y="-500" width="2320" height="650" fill={`url(#${id}-bg)`} />
-      <circle cx={W * 0.78} cy="34" r="48" fill="#c6a15b" opacity={tone === "dark" ? 0.12 : 0.18} />
+      <circle cx={W * 0.78} cy="34" r="48" fill="#ffffff" opacity={tone === "dark" ? 0.45 : 0.7} />
       <line x1="-1000" y1={ground + 4} x2="1320" y2={ground + 4} stroke={palette.road} strokeWidth="1" />
       <line x1="-1000" y1={ground + 16} x2="1320" y2={ground + 16} stroke={palette.road} strokeWidth="2" strokeLinecap="round" strokeDasharray="50 70" />
       <ellipse cx={W / 2} cy={ground + 2} rx={s.length / 2} ry="5" fill="#000" opacity="0.25" />
@@ -78,8 +78,8 @@ export default function BusArt({ type, tone = "dark", className }) {
       <path d={`M ${winEnd + 8} ${winTop} H ${x1 - s.nose - 8} Q ${x1 - s.nose + 2} ${winTop} ${x1 - 8} ${top + s.height * 0.5} H ${winEnd + 8} Z`} fill={`url(#${id}-glass)`} />
       <rect x={winEnd + 8} y={top + s.height * 0.56} width="18" height={s.height * 0.36} rx="2" fill="none" stroke="#0a1628" strokeOpacity="0.25" />
       {/* Gold livery */}
-      <rect x={x0} y={bottom - 26} width={s.length - 4} height="3" fill="#c6a15b" />
-      <rect x={x0} y={bottom - 21} width={s.length - 8} height="1.2" fill="#c6a15b" opacity="0.6" />
+      <rect x={x0} y={bottom - 26} width={s.length - 4} height="3" fill="#2563eb" />
+      <rect x={x0} y={bottom - 21} width={s.length - 8} height="1.2" fill="#2563eb" opacity="0.5" />
       <rect x={x1 - 8} y={bottom - 20} width="6" height="5" rx="1.5" fill="#f8e7b5" />
 
       {wheels.map((cx) => (

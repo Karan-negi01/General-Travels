@@ -5,14 +5,14 @@
   margin-bottom: var(--space-5);
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-lg);
-  background: var(--navy-900);
-  color: var(--on-dark);
+  background: var(--accent-600);
+  color: #fff;
   font-size: var(--text-sm);
 }
 
 .banner svg {
   flex: none;
-  color: var(--gold-400);
+  color: #fff;
 }
 
 .bannerWarn {
@@ -66,7 +66,7 @@
 .sectionHead a {
   font-size: var(--text-sm);
   font-weight: 700;
-  color: var(--gold-700);
+  color: var(--accent-700);
 }
 
 .card {
@@ -126,7 +126,7 @@
 .busTitle {
   font-family: var(--font-display);
   font-size: var(--text-lg);
-  font-weight: 600;
+  font-weight: 800;
 }
 
 .busStatus {

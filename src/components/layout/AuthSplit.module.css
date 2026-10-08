@@ -18,20 +18,20 @@
   gap: var(--space-5);
   padding: var(--space-7) var(--space-6);
   background:
-    radial-gradient(80% 60% at 100% 0%, rgb(198 161 91 / 0.2), transparent 60%),
-    linear-gradient(180deg, var(--navy-900), var(--navy-950));
-  color: var(--on-dark-muted);
+    radial-gradient(80% 60% at 100% 0%, rgb(59 130 246 / 0.14), transparent 60%),
+    linear-gradient(180deg, var(--accent-100), var(--accent-50));
+  color: var(--text-muted);
+  border-right: 1px solid var(--border);
 }
 
 .aside h1 {
   font-size: clamp(1.8rem, 3vw, 2.5rem);
-  color: #fff;
+  color: var(--navy-900);
 }
 
 .aside h1 em {
-  font-style: italic;
-  font-weight: 500;
-  color: var(--gold-400);
+  font-style: normal;
+  color: var(--accent-600);
 }
 
 .form {

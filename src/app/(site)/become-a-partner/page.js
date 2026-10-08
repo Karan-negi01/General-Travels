@@ -23,7 +23,7 @@ export default function BecomePartnerPage() {
       <h1>Grow your fleet&apos;s bookings, <em>on your terms.</em></h1>
       <p>You set the per-km rate. Customers see a fixed fare and book. You confirm the trips you want.</p>
       <div className={styles.steps}>
-        <Stepper steps={STEPS} tone="dark" />
+        <Stepper steps={STEPS} />
       </div>
     </>
   );
