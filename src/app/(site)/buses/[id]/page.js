@@ -8,7 +8,7 @@ import { getVehicleType } from "@/lib/constants/vehicles";
 import { amenitiesByCategory } from "@/lib/constants/amenities";
 import { formatINR, formatDateRange } from "@/lib/format";
 import AmenityIcon from "@/components/vehicles/AmenityIcon";
-import BusArt from "@/components/vehicles/BusArt";
+import BusPhoto from "@/components/vehicles/BusPhoto";
 import FareBreakdown from "@/components/vehicles/FareBreakdown";
 import TripSearch from "@/components/forms/TripSearch";
 import BookingForm from "@/components/forms/BookingForm";
@@ -103,7 +103,7 @@ export default async function BusPage({ params, searchParams }) {
       <div className={styles.layout}>
         <div className={styles.main}>
           <div className={styles.gallery}>
-            <BusArt type={bus.type} className={styles.galleryArt} />
+            <BusPhoto type={bus.type} sizes="(max-width: 1000px) 100vw, 760px" priority />
           </div>
 
           <div>

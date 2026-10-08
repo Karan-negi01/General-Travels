@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, BadgeIndianRupee, ShieldCheck, LockKeyhole, ReceiptText, Users, Bus, UserCheck } from "lucide-react";
 import TripSearch from "@/components/forms/TripSearch";
-import BusArt from "@/components/vehicles/BusArt";
+import BusPhoto from "@/components/vehicles/BusPhoto";
+import { HERO_PHOTO } from "@/lib/constants/photos";
 import BusCard from "@/components/vehicles/BusCard";
 import { VEHICLE_TYPES } from "@/lib/constants/vehicles";
 import { searchBuses, getPlatformStats } from "@/lib/data/queries";
@@ -61,7 +62,7 @@ export default async function HomePage() {
             </dl>
           </div>
           <div className={styles.heroArt} aria-hidden="true">
-            <BusArt type="luxury-coach" className={styles.heroSvg} />
+            <BusPhoto photo={HERO_PHOTO} sizes="(max-width: 960px) 0px, 520px" priority />
             <div className={styles.heroBadge}>
               <ShieldCheck size={18} />
               <div>
@@ -109,7 +110,7 @@ export default async function HomePage() {
         <div className={styles.fleet}>
           {VEHICLE_TYPES.map((t) => (
             <Link key={t.id} href={`/buses?type=${t.id}`} className={styles.fleetItem}>
-              <BusArt type={t.id} tone="light" className={styles.fleetArt} />
+              <div className={styles.fleetArt}><BusPhoto type={t.id} sizes="(max-width: 640px) 100vw, 380px" /></div>
               <div className={styles.fleetBody}>
                 <h3>{t.label.split(" (")[0]}</h3>
                 <p>{t.seatRange[0]}–{t.seatRange[1]} seats</p>

@@ -60,16 +60,13 @@
 }
 
 .rowArt {
+  position: relative;
   overflow: hidden;
   border-radius: var(--radius);
   height: 96px;
 }
 
-.rowArt svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
+
 
 .ref {
   font-size: 11px;
@@ -208,16 +205,13 @@
 }
 
 .busMini {
+  position: relative;
   overflow: hidden;
   border-radius: var(--radius);
   height: 140px;
 }
 
-.busMini svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
+
 
 .busTitle {
   margin: 4px 0;

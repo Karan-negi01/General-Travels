@@ -24,6 +24,7 @@ const COLUMNS = [
     links: [
       { href: "/how-it-works", label: "About the platform" },
       { href: "/login?role=admin", label: "Team sign in" },
+      { href: "/photo-credits", label: "Photo credits" },
     ],
   },
 ];

@@ -9,7 +9,7 @@ import { formatDate, formatDateRange, todayISO } from "@/lib/format";
 import Badge from "@/components/ui/Badge";
 import Stepper from "@/components/ui/Stepper";
 import FareBreakdown from "@/components/vehicles/FareBreakdown";
-import BusArt from "@/components/vehicles/BusArt";
+import BusPhoto from "@/components/vehicles/BusPhoto";
 import styles from "../bookings.module.css";
 
 export const metadata = { title: "Booking details" };
@@ -114,7 +114,7 @@ export default async function BookingPage({ params, searchParams }) {
         <aside className="stack">
           <section className={styles.card}>
             <div className={styles.busMini}>
-              <BusArt type={booking.bus.type} />
+              <BusPhoto type={booking.bus.type} sizes="380px" />
             </div>
             <p className="eyebrow" style={{ marginTop: 16 }}>{getVehicleType(booking.bus.type)?.label.split(" (")[0]}</p>
             <h3 className={styles.busTitle}>{booking.bus.title}</h3>

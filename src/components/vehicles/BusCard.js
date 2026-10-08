@@ -3,7 +3,7 @@ import { Users, Snowflake, ShieldCheck, CalendarX } from "lucide-react";
 import { getVehicleType } from "@/lib/constants/vehicles";
 import { formatINR, formatNumber } from "@/lib/format";
 import AmenityList from "./AmenityList";
-import BusArt from "./BusArt";
+import BusPhoto from "./BusPhoto";
 import styles from "./BusCard.module.css";
 
 // `query` carries the customer's trip to the detail page so the fare follows along.
@@ -14,7 +14,7 @@ export default function BusCard({ bus, query = "", highlight = [] }) {
     <div className={styles.wrap}>
       <article className={`${styles.card} ${bus.available ? "" : styles.unavailable}`}>
         <Link href={href} className={styles.media} tabIndex={-1} aria-hidden="true">
-          <BusArt type={bus.type} className={styles.art} />
+          <BusPhoto type={bus.type} sizes="(max-width: 520px) 100vw, 240px" />
           <span className={styles.typeTag}>{type?.label.split(" (")[0]}</span>
         </Link>
 

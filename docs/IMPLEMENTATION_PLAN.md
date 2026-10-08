@@ -49,7 +49,7 @@ Pending and confirmed bookings block the bus for those dates, so it can't be dou
 | Framework | Next.js 16 (App Router), JavaScript | Server Components and Server Actions give a single codebase for site, operator portal and admin. SEO-friendly by default. |
 | React | React 19 + **React Compiler** | Automatic memoisation, so no hand-written `useMemo` or `useCallback`. |
 | Styling | **CSS Modules** + global design tokens (`src/app/globals.css`) | Navy + gold premium theme, Playfair Display + Manrope. Brand colours live in one place. |
-| Icons | lucide-react | Tree-shaken SVG icons. Vehicle illustrations are SVG (`BusArt.js`) until real photos are uploaded. |
+| Icons | lucide-react | Tree-shaken SVG icons. Vehicle photos are Wikimedia Commons stock images per type (`lib/constants/photos.js`, credited on `/photo-credits`) until operators upload their own. |
 | Auth (PoC) | Signed HTTP-only cookie session (`src/lib/session.js`) | Customers and operators sign in with their mobile number, and admin signs in with a password. |
 | Data (PoC) | JSON file store (`.data/db.json`) | Runs with zero setup. All access goes through `src/lib/data/*`. |
 | Data (MVP) | PostgreSQL (Neon / Supabase / RDS) + Prisma or Drizzle | Relational fits operators → buses → bookings. |
@@ -85,7 +85,7 @@ src/
 ├── components/
 │   ├── layout/    SiteHeader, Footer, PortalShell, AuthSplit, Logo
 │   ├── forms/     TripSearch, BookingForm, BusForm, OperatorSignupForm, LoginForms
-│   ├── vehicles/  BusCard, BusArt, FareBreakdown, Amenity*
+│   ├── vehicles/  BusCard, BusPhoto, FareBreakdown, Amenity*
 │   ├── bookings/  OperatorBookingCard
 │   └── ui/        Badge, Stepper, EmptyState, PageHeader, StatCard, ReviewActions
 └── lib/

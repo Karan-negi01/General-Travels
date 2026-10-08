@@ -7,7 +7,7 @@ import { formatINR } from "@/lib/format";
 import PageHeader from "@/components/ui/PageHeader";
 import Badge from "@/components/ui/Badge";
 import EmptyState from "@/components/ui/EmptyState";
-import BusArt from "@/components/vehicles/BusArt";
+import BusPhoto from "@/components/vehicles/BusPhoto";
 import styles from "../operator.module.css";
 
 export const metadata = { title: "My buses" };
@@ -50,7 +50,7 @@ export default async function OperatorBusesPage({ searchParams }) {
             const Icon = state.icon;
             return (
               <article key={bus.id} className={styles.bus}>
-                <div className={styles.busArt}><BusArt type={bus.type} tone={bus.live ? "dark" : "light"} /></div>
+                <div className={styles.busArt}><BusPhoto type={bus.type} sizes="340px" /></div>
                 <div className={styles.busBody}>
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                     <span className="hint">{bus.registrationNumber}</span>

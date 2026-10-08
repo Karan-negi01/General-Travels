@@ -4,7 +4,7 @@ import { requireCustomer } from "@/lib/auth";
 import { getCustomerBookings } from "@/lib/data/queries";
 import { formatINR, formatDateRange, todayISO } from "@/lib/format";
 import Badge from "@/components/ui/Badge";
-import BusArt from "@/components/vehicles/BusArt";
+import BusPhoto from "@/components/vehicles/BusPhoto";
 import EmptyState from "@/components/ui/EmptyState";
 import styles from "./bookings.module.css";
 
@@ -14,7 +14,7 @@ function BookingRow({ booking }) {
   const route = booking.from === booking.to ? `Local in ${booking.from}` : `${booking.from} → ${booking.to}`;
   return (
     <Link href={`/bookings/${booking.id}`} className={styles.row}>
-      <div className={styles.rowArt}><BusArt type={booking.bus?.type} /></div>
+      <div className={styles.rowArt}><BusPhoto type={booking.bus?.type} sizes="150px" /></div>
       <div className={styles.rowBody}>
         <p className={styles.ref}>{booking.ref}</p>
         <h3 className={styles.route}>{route}</h3>
