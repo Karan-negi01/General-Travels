@@ -2,6 +2,7 @@ import "server-only";
 
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
+import { DEMO_MODE } from "./demo";
 
 // Signed cookie session: base64url(JSON payload) + "." + HMAC-SHA256 signature.
 // Holds only { role, id, exp }; everything else is looked up from the store.
@@ -12,8 +13,8 @@ const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 function secret() {
   const value = process.env.SESSION_SECRET;
   if (value) return value;
-  if (process.env.NODE_ENV === "production") throw new Error("SESSION_SECRET must be set in production");
-  return "dev-only-session-secret";
+  if (!DEMO_MODE) throw new Error("SESSION_SECRET must be set in production");
+  return "demo-only-session-secret";
 }
 
 function sign(payload) {

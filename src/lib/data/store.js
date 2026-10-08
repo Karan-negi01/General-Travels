@@ -1,6 +1,7 @@
 import "server-only";
 
 import { promises as fs } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { seed, SCHEMA_VERSION } from "./seed";
 
@@ -8,11 +9,12 @@ import { seed, SCHEMA_VERSION } from "./seed";
 // Every read/write in the app goes through this module, so swapping it for
 // Postgres (e.g. via Prisma or Drizzle) later only touches `src/lib/data/*`.
 //
-// NOTE: this works for local development and a single-server demo only.
-// Serverless hosts (Vercel) have a read-only filesystem — move to a real
-// database before deploying.
+// NOTE: on Vercel the project folder is read-only, so the file lives in the
+// writable temp folder instead. That is enough for a demo, but the data resets
+// whenever Vercel starts a fresh server instance, and separate instances don't
+// share it. Move to a real database before real users rely on it.
 
-const DB_DIR = path.join(process.cwd(), ".data");
+const DB_DIR = process.env.DATA_DIR || (process.env.VERCEL ? path.join(os.tmpdir(), "general-travels") : path.join(process.cwd(), ".data"));
 const DB_FILE = path.join(DB_DIR, "db.json");
 
 // Serialise writes so concurrent server actions don't clobber each other.

@@ -3,6 +3,7 @@ import { Users, Bus, UserCheck, ArrowRight } from "lucide-react";
 import { getViewer, ROLE_HOME } from "@/lib/auth";
 import { demoLogin } from "@/lib/actions/auth";
 import { safeNext } from "@/lib/validation";
+import { DEMO_MODE } from "@/lib/demo";
 import AuthSplit from "@/components/layout/AuthSplit";
 import { CustomerLogin, OperatorLogin, AdminLogin } from "@/components/forms/LoginForms";
 import styles from "./login.module.css";
@@ -70,9 +71,9 @@ export default async function LoginPage({ searchParams }) {
         )}
         {role === "admin" && <AdminLogin next={next} />}
 
-        {process.env.NODE_ENV !== "production" && (
+        {DEMO_MODE && (
           <div className={styles.demo}>
-            <p className={styles.demoTitle}>Demo access <span>development only</span></p>
+            <p className={styles.demoTitle}>Demo access <span>demo only</span></p>
             <div className={styles.demoGrid}>
               {DEMO.map((d) => (
                 <form key={d.account} action={demoLogin}>

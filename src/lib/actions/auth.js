@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { writeSession, clearSession } from "@/lib/session";
 import { ROLE_HOME } from "@/lib/auth";
+import { DEMO_MODE } from "@/lib/demo";
 import { readDb, updateDb, newId } from "@/lib/data/store";
 import { str, required, normalizePhone, safeNext, PHONE_RE, EMAIL_RE } from "@/lib/validation";
 
@@ -50,14 +51,14 @@ export async function loginOperator(prevState, formData) {
 
 export async function loginAdmin(prevState, formData) {
   const password = str(formData, "password");
-  // Dev fallback so the demo works out of the box; production must set ADMIN_PASSWORD.
-  const expected = process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === "production" ? null : "admin");
+  // Demo fallback so the demo works out of the box; production must set ADMIN_PASSWORD.
+  const expected = process.env.ADMIN_PASSWORD || (DEMO_MODE ? "admin" : null);
   if (!expected || password !== expected) return { errors: { password: "Incorrect password" } };
   await writeSession({ role: "admin", id: "admin" });
   redirect(safeNext(str(formData, "next"), ROLE_HOME.admin));
 }
 
-// One-click demo accounts (development only) so each role can be shown quickly.
+// One-click demo accounts (demo mode only) so each role can be shown quickly.
 const DEMO_ACCOUNTS = {
   customer: { role: "customer", id: "cus_priya" },
   operator: { role: "operator", id: "op_general" },
@@ -66,7 +67,7 @@ const DEMO_ACCOUNTS = {
 };
 
 export async function demoLogin(formData) {
-  if (process.env.NODE_ENV === "production") throw new Error("Demo sign-in is disabled in production");
+  if (!DEMO_MODE) throw new Error("Demo sign-in is disabled");
   const account = DEMO_ACCOUNTS[str(formData, "account")];
   if (!account) throw new Error("Unknown demo account");
   await writeSession(account);
