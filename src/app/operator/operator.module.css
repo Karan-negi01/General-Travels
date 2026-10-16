@@ -18,7 +18,7 @@
 .bannerWarn {
   background: var(--warning-bg);
   color: var(--warning);
-  border: 1px solid #f0d9ad;
+  border: 1px solid #f3dfae;
 }
 
 .bannerWarn svg {

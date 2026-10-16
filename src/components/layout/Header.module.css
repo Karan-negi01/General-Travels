@@ -2,10 +2,9 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgb(255 255 255 / 0.94);
+  background: rgb(255 255 255 / 0.96);
   backdrop-filter: saturate(140%) blur(12px);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 1px 12px rgb(19 37 74 / 0.04);
 }
 
 .inner {
@@ -29,7 +28,7 @@
 }
 
 .link:hover {
-  color: var(--accent-600);
+  color: var(--text);
 }
 
 .actions {
@@ -42,17 +41,18 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 14px;
-  border: 1px solid var(--accent-200);
+  padding: 8px 14px;
+  border: 1px solid var(--border-strong);
   border-radius: 999px;
-  background: var(--accent-100);
+  background: var(--surface);
   font-size: var(--text-sm);
   font-weight: 700;
-  color: var(--accent-700);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
 }
 
 .account:hover {
-  border-color: var(--accent-300);
+  box-shadow: var(--shadow);
 }
 
 .textButton {

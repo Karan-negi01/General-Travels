@@ -1,7 +1,7 @@
 .band {
   padding: var(--space-7) 0 var(--space-6);
   background:
-    radial-gradient(50% 90% at 90% 0%, rgb(59 130 246 / 0.14), transparent 60%),
+    radial-gradient(50% 90% at 90% 0%, rgb(var(--accent-rgb) / 0.14), transparent 60%),
     linear-gradient(180deg, var(--accent-100), var(--bg));
   color: var(--text-muted);
 }

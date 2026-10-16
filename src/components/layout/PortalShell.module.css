@@ -13,7 +13,7 @@
   height: 100vh;
   padding: var(--space-5) var(--space-4);
   background: var(--brand-900);
-  color: #c9d5e6;
+  color: var(--on-dark-muted);
 }
 .logo {
   display: inline-flex;

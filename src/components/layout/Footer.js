@@ -35,7 +35,7 @@ export default function Footer() {
       <div className={`container ${styles.grid}`}>
         <div className={styles.brand}>
           <Logo />
-          <p>Premium bus and coach hire across India. Every operator and every vehicle is verified by our team before it can be booked.</p>
+          <p>Book verified buses, tempo travellers and luxury coaches for your group at a fixed fare. Every owner, bus and driver is checked by our team.</p>
         </div>
         {COLUMNS.map((col) => (
           <div key={col.title}>
@@ -50,7 +50,7 @@ export default function Footer() {
       </div>
       <div className={`container ${styles.bottom}`}>
         <span>© {new Date().getFullYear()} General Travels. All rights reserved.</span>
-        <span>Fixed fares · Verified operators · GST invoices</span>
+        <span>Fixed fares · Verified buses &amp; drivers · GST invoices</span>
       </div>
     </footer>
   );

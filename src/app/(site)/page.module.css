@@ -3,7 +3,7 @@
   background:
     radial-gradient(900px 400px at 85% -10%, rgb(241 143 45 / 0.25), transparent 60%),
     linear-gradient(160deg, var(--brand-900), var(--brand-700));
-  color: #dbe5f3;
+  color: var(--on-dark-muted);
 }
 .eyebrow {
   font-size: var(--text-sm);
