@@ -3,8 +3,12 @@
 // also resets it (the data model changed).
 
 import { calculateFare } from "../pricing";
+import { splitFare, amountFor, DEFAULT_COMMISSION_RATE } from "../payments";
+import { BUS_DOCUMENTS } from "../constants/vehicles";
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
+
+const settings = { defaultCommissionRate: DEFAULT_COMMISSION_RATE };
 
 const customers = [
   { id: "cus_priya", name: "Priya Sharma", phone: "9999011111", email: "priya@example.com", createdAt: "2026-08-02T10:00:00.000Z" },
@@ -18,10 +22,14 @@ const operators = [
     ownerName: "Karan Negi",
     phone: "9810000001",
     email: "ops@generaltravels.in",
+    address: "14 Transport Nagar, Karol Bagh, New Delhi 110005",
     city: "Delhi",
     fleetSize: 3,
     gstNumber: "07AAAAA0000A1Z5",
     panNumber: "AAAAA0000A",
+    aadhaarNumber: "123412341234",
+    termsAcceptedAt: "2026-01-10T09:00:00.000Z",
+    commissionRate: null, // null = the platform default
     status: "approved",
     reviewedAt: "2026-01-10T12:00:00.000Z",
     createdAt: "2026-01-10T09:00:00.000Z",
@@ -32,10 +40,14 @@ const operators = [
     ownerName: "Rakesh Thakur",
     phone: "9816000002",
     email: "rakesh@example.com",
+    address: "Plot 22, Industrial Area Phase 1, Chandigarh 160002",
     city: "Chandigarh",
     fleetSize: 2,
     gstNumber: "04BBBBB1111B1Z2",
     panNumber: "BBBBB1111B",
+    aadhaarNumber: "234523452345",
+    termsAcceptedAt: "2026-03-02T09:00:00.000Z",
+    commissionRate: 8,
     status: "approved",
     reviewedAt: "2026-03-03T12:00:00.000Z",
     createdAt: "2026-03-02T09:00:00.000Z",
@@ -46,12 +58,94 @@ const operators = [
     ownerName: "Anjali Meena",
     phone: "9829000003",
     email: "anjali@example.com",
+    address: "Shop 5, Sindhi Camp, Jaipur 302001",
     city: "Jaipur",
     fleetSize: 4,
     gstNumber: "08CCCCC2222C1Z9",
     panNumber: "CCCCC2222C",
+    aadhaarNumber: "345634563456",
+    termsAcceptedAt: "2026-10-01T09:00:00.000Z",
+    commissionRate: null,
     status: "pending",
     createdAt: "2026-10-01T09:00:00.000Z",
+  },
+];
+
+// Seed files have no bytes on disk; /files/[id] draws a placeholder for them.
+const files = [];
+function seedFile(id, operatorId, kind, name) {
+  files.push({ id, operatorId, kind, name, mime: kind === "photo" ? "image/svg+xml" : "application/pdf", size: 0, seed: true, createdAt: "2026-01-01T00:00:00.000Z" });
+  return id;
+}
+function seedDocs(busId, operatorId, missing = []) {
+  return Object.fromEntries(
+    BUS_DOCUMENTS.map((d) => [d.id, missing.includes(d.id) ? null : seedFile(`file_${busId}_${d.id}`, operatorId, "document", `${d.short}.pdf`)])
+  );
+}
+
+const drivers = [
+  {
+    id: "drv_suresh",
+    operatorId: "op_general",
+    name: "Suresh Kumar",
+    phone: "9811100011",
+    licenceNumber: "DL-0420110012345",
+    licenceExpiry: "2029-05-31",
+    psvBadge: "PSV-DL-55821",
+    aadhaarNumber: "456745674567",
+    experienceYears: 14,
+    photo: null,
+    licenceFile: seedFile("file_drv_suresh_licence", "op_general", "document", "Licence.pdf"),
+    status: "approved",
+    reviewedAt: "2026-01-12T12:00:00.000Z",
+    createdAt: "2026-01-12T09:00:00.000Z",
+  },
+  {
+    id: "drv_mohan",
+    operatorId: "op_general",
+    name: "Mohan Singh",
+    phone: "9811100022",
+    licenceNumber: "DL-0320090067890",
+    licenceExpiry: "2028-11-30",
+    psvBadge: "PSV-DL-41007",
+    aadhaarNumber: "567856785678",
+    experienceYears: 18,
+    photo: null,
+    licenceFile: seedFile("file_drv_mohan_licence", "op_general", "document", "Licence.pdf"),
+    status: "approved",
+    reviewedAt: "2026-01-15T12:00:00.000Z",
+    createdAt: "2026-01-15T09:00:00.000Z",
+  },
+  {
+    id: "drv_balwinder",
+    operatorId: "op_himalayan",
+    name: "Balwinder Rana",
+    phone: "9816100033",
+    licenceNumber: "HP-0120120011223",
+    licenceExpiry: "2030-02-28",
+    psvBadge: "PSV-HP-20931",
+    aadhaarNumber: "678967896789",
+    experienceYears: 11,
+    photo: null,
+    licenceFile: seedFile("file_drv_balwinder_licence", "op_himalayan", "document", "Licence.pdf"),
+    status: "approved",
+    reviewedAt: "2026-03-05T12:00:00.000Z",
+    createdAt: "2026-03-05T09:00:00.000Z",
+  },
+  {
+    id: "drv_ramesh",
+    operatorId: "op_pinkcity",
+    name: "Ramesh Gurjar",
+    phone: "9829100044",
+    licenceNumber: "RJ-1420150044556",
+    licenceExpiry: "2027-08-31",
+    psvBadge: "",
+    aadhaarNumber: "789078907890",
+    experienceYears: 7,
+    photo: null,
+    licenceFile: seedFile("file_drv_ramesh_licence", "op_pinkcity", "document", "Licence.pdf"),
+    status: "pending",
+    createdAt: "2026-10-02T09:00:00.000Z",
   },
 ];
 
@@ -59,8 +153,10 @@ const buses = [
   {
     id: "bus_urbania",
     operatorId: "op_general",
+    driverId: "drv_suresh",
     title: "Force Urbania Luxury",
     type: "luxury-van",
+    seating: "seater",
     seats: 17,
     ac: true,
     modelYear: 2024,
@@ -71,7 +167,9 @@ const buses = [
     minKmPerDay: 250,
     driverAllowancePerDay: 800,
     amenities: ["ac", "pushback-seats", "charging-ports", "wifi", "water-bottles", "music-system", "gps", "first-aid", "fire-extinguisher", "luggage-space", "uniformed-driver"],
-    documents: { rc: true, insurance: true, permit: true, fitness: true },
+    photos: [],
+    documents: seedDocs("bus_urbania", "op_general"),
+    blockedDates: [{ id: "blk_service", start: "2026-10-28", end: "2026-10-29", reason: "Servicing" }],
     status: "approved",
     reviewedAt: "2026-01-12T12:00:00.000Z",
     createdAt: "2026-01-12T09:00:00.000Z",
@@ -79,8 +177,10 @@ const buses = [
   {
     id: "bus_volvo",
     operatorId: "op_general",
+    driverId: "drv_mohan",
     title: "Volvo 9600 Multi-axle",
     type: "luxury-coach",
+    seating: "seater",
     seats: 45,
     ac: true,
     modelYear: 2023,
@@ -90,8 +190,10 @@ const buses = [
     ratePerKm: 85,
     minKmPerDay: 300,
     driverAllowancePerDay: 1200,
-    amenities: ["ac", "recliner-seats", "blankets", "charging-ports", "wifi", "washroom", "tv", "pa-system", "water-bottles", "gps", "cctv", "first-aid", "fire-extinguisher", "emergency-exit", "attendant"],
-    documents: { rc: true, insurance: true, permit: true, fitness: true },
+    amenities: ["ac", "recliner-seats", "blankets", "charging-ports", "wifi", "washroom", "tv", "pa-system", "water-bottles", "gps", "cctv", "first-aid", "fire-extinguisher", "emergency-exit", "attendant", "luggage-space"],
+    photos: [],
+    documents: seedDocs("bus_volvo", "op_general"),
+    blockedDates: [{ id: "blk_office", start: "2026-11-05", end: "2026-11-07", reason: "Booked through our office" }],
     status: "approved",
     reviewedAt: "2026-01-15T12:00:00.000Z",
     createdAt: "2026-01-15T09:00:00.000Z",
@@ -99,8 +201,10 @@ const buses = [
   {
     id: "bus_tempo",
     operatorId: "op_general",
+    driverId: "drv_suresh",
     title: "Tempo Traveller Executive",
     type: "tempo-traveller",
+    seating: "seater",
     seats: 12,
     ac: true,
     modelYear: 2022,
@@ -111,7 +215,9 @@ const buses = [
     minKmPerDay: 250,
     driverAllowancePerDay: 600,
     amenities: ["ac", "pushback-seats", "usb-ports", "music-system", "gps", "first-aid"],
-    documents: { rc: true, insurance: true, permit: true, fitness: true },
+    photos: [],
+    documents: seedDocs("bus_tempo", "op_general"),
+    blockedDates: [],
     status: "approved",
     reviewedAt: "2026-02-01T12:00:00.000Z",
     createdAt: "2026-02-01T09:00:00.000Z",
@@ -119,8 +225,10 @@ const buses = [
   {
     id: "bus_sleeper",
     operatorId: "op_himalayan",
+    driverId: "drv_balwinder",
     title: "Himalayan Sleeper Coach",
     type: "sleeper-coach",
+    seating: "sleeper",
     seats: 36,
     ac: true,
     modelYear: 2021,
@@ -130,8 +238,10 @@ const buses = [
     ratePerKm: 70,
     minKmPerDay: 300,
     driverAllowancePerDay: 1000,
-    amenities: ["ac", "sleeper-berths", "blankets", "reading-lights", "curtains", "charging-ports", "water-bottles", "gps", "cctv", "fire-extinguisher", "emergency-exit"],
-    documents: { rc: true, insurance: true, permit: true, fitness: true },
+    amenities: ["ac", "sleeper-berths", "blankets", "reading-lights", "curtains", "charging-ports", "water-bottles", "gps", "cctv", "fire-extinguisher", "emergency-exit", "luggage-space"],
+    photos: [],
+    documents: seedDocs("bus_sleeper", "op_himalayan"),
+    blockedDates: [],
     status: "approved",
     reviewedAt: "2026-03-05T12:00:00.000Z",
     createdAt: "2026-03-05T09:00:00.000Z",
@@ -139,8 +249,10 @@ const buses = [
   {
     id: "bus_minibus",
     operatorId: "op_himalayan",
+    driverId: "drv_balwinder",
     title: "Hill-ready Mini Bus",
     type: "mini-bus",
+    seating: "seater",
     seats: 26,
     ac: false,
     modelYear: 2020,
@@ -151,15 +263,21 @@ const buses = [
     minKmPerDay: 250,
     driverAllowancePerDay: 800,
     amenities: ["pushback-seats", "music-system", "luggage-space", "first-aid", "speed-governor"],
-    documents: { rc: true, insurance: true, permit: false, fitness: true },
-    status: "pending",
+    photos: [],
+    documents: seedDocs("bus_minibus", "op_himalayan", ["permit"]),
+    blockedDates: [],
+    status: "rejected",
+    rejectionReason: "The tourist permit is missing. Upload a valid permit and submit the bus again.",
+    reviewedAt: "2026-10-04T12:00:00.000Z",
     createdAt: "2026-10-03T09:00:00.000Z",
   },
   {
     id: "bus_pinkcity",
     operatorId: "op_pinkcity",
+    driverId: "drv_ramesh",
     title: "Royal Rajasthan Tempo Traveller",
     type: "tempo-traveller",
+    seating: "seater",
     seats: 20,
     ac: true,
     modelYear: 2023,
@@ -170,27 +288,37 @@ const buses = [
     minKmPerDay: 250,
     driverAllowancePerDay: 700,
     amenities: ["ac", "pushback-seats", "charging-ports", "music-system", "water-bottles", "gps", "first-aid"],
-    documents: { rc: true, insurance: true, permit: true, fitness: true },
+    photos: [],
+    documents: seedDocs("bus_pinkcity", "op_pinkcity"),
+    blockedDates: [],
     status: "pending",
     createdAt: "2026-10-02T09:00:00.000Z",
   },
 ];
 
-function booking({ id, ref, customerId, busId, trip, status, createdAt, pickupAddress, notes = "" }) {
+function booking({ id, ref, customerId, busId, trip, status, createdAt, pickupAddress, notes = "", payment }) {
   const bus = buses.find((b) => b.id === busId);
+  const operator = operators.find((o) => o.id === bus.operatorId);
+  const fare = calculateFare(bus, trip);
+  const split = splitFare(fare, operator.commissionRate ?? settings.defaultCommissionRate);
   return {
     id,
     ref,
     customerId,
     busId,
     operatorId: bus.operatorId,
+    driverId: bus.driverId,
     ...trip,
     pickupAddress,
     notes,
-    fare: calculateFare(bus, trip),
+    fare,
+    ...split,
+    payments: payment ? [{ id: `pay_demo_${id}`, amount: amountFor(payment, fare), option: payment, method: "upi", demo: true, paidAt: createdAt }] : [],
+    refunds: [],
+    payout: status === "completed" ? { amount: split.ownerPayout, status: "paid", paidAt: "2026-09-15T10:00:00.000Z" } : null,
     status,
     createdAt,
-    ...(status !== "pending" && { respondedAt: createdAt }),
+    ...(status !== "payment_pending" && { confirmedAt: createdAt }),
   };
 }
 
@@ -203,6 +331,7 @@ const bookings = [
     trip: { tripType: "round-trip", from: "Delhi", to: "Jaipur", startDate: "2026-10-18", endDate: "2026-10-20", passengers: 40 },
     pickupAddress: "Cyber City, Gurugram — Building 10 main gate",
     notes: "Team offsite. Please arrive 15 minutes early.",
+    payment: "full",
     status: "confirmed",
     createdAt: "2026-09-28T10:00:00.000Z",
   }),
@@ -214,7 +343,8 @@ const bookings = [
     trip: { tripType: "round-trip", from: "Delhi", to: "Agra", startDate: "2026-10-24", endDate: "2026-10-24", passengers: 14 },
     pickupAddress: "Hauz Khas Village, New Delhi",
     notes: "Family day trip to the Taj Mahal.",
-    status: "pending",
+    payment: "advance",
+    status: "confirmed",
     createdAt: "2026-10-06T08:30:00.000Z",
   }),
   booking({
@@ -224,9 +354,10 @@ const bookings = [
     busId: "bus_tempo",
     trip: { tripType: "round-trip", from: "Delhi", to: "Delhi", startDate: "2026-09-14", endDate: "2026-09-14", passengers: 10 },
     pickupAddress: "Connaught Place, New Delhi",
+    payment: "full",
     status: "completed",
     createdAt: "2026-09-01T10:00:00.000Z",
   }),
 ];
 
-export const seed = { version: SCHEMA_VERSION, customers, operators, buses, bookings };
+export const seed = { version: SCHEMA_VERSION, settings, customers, operators, drivers, buses, files, bookings };

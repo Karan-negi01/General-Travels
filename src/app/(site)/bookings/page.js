@@ -14,7 +14,7 @@ function BookingRow({ booking }) {
   const route = booking.from === booking.to ? `Local in ${booking.from}` : `${booking.from} → ${booking.to}`;
   return (
     <Link href={`/bookings/${booking.id}`} className={styles.row}>
-      <div className={styles.rowArt}><BusPhoto type={booking.bus?.type} sizes="150px" /></div>
+      <div className={styles.rowArt}><BusPhoto type={booking.bus?.type} src={booking.bus?.photoUrl ?? undefined} alt={booking.bus?.title} sizes="150px" /></div>
       <div className={styles.rowBody}>
         <p className={styles.ref}>{booking.ref}</p>
         <h3 className={styles.route}>{route}</h3>
@@ -25,8 +25,9 @@ function BookingRow({ booking }) {
         </p>
       </div>
       <div className={styles.rowAside}>
-        <Badge status={booking.status} kind="booking" />
+        <Badge status={booking.expired ? "cancelled" : booking.status} kind="booking">{booking.expired ? "Payment not completed" : undefined}</Badge>
         <p className={styles.amount}>{formatINR(booking.fare.total)}</p>
+        {booking.status === "confirmed" && booking.balance > 0 && <p className="hint">Balance {formatINR(booking.balance)} due</p>}
         <span className={styles.view}>Details <ArrowRight size={14} /></span>
       </div>
     </Link>
@@ -37,7 +38,7 @@ export default async function MyBookingsPage() {
   const viewer = await requireCustomer("/bookings");
   const bookings = await getCustomerBookings(viewer.id);
   const today = todayISO();
-  const upcoming = bookings.filter((b) => ["pending", "confirmed"].includes(b.status) && b.endDate >= today).reverse();
+  const upcoming = bookings.filter((b) => (b.status === "confirmed" || (b.status === "payment_pending" && !b.expired)) && b.endDate >= today).reverse();
   const past = bookings.filter((b) => !upcoming.includes(b));
 
   return (

@@ -1,0 +1,67 @@
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle input {
+  accent-color: var(--navy-800);
+  margin: 0;
+}
+
+.toggle:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.on {
+  border-color: var(--accent-600);
+  background: var(--accent-50);
+  color: var(--accent-700);
+}
+
+.bar {
+  position: sticky;
+  bottom: var(--space-4);
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--navy-900);
+  color: #fff;
+  box-shadow: var(--shadow-lg);
+}
+
+.bar p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-sm);
+}
+
+.barActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.barActions :global(.btn-ghost) {
+  color: #fff;
+}
+
+.barActions :global(.hint) {
+  color: var(--on-dark-muted);
+}

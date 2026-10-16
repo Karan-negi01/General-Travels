@@ -3,7 +3,10 @@
 // Approval rules:
 //   - An operator (bus owner) is approved ONCE by admin.
 //   - Every bus is approved separately, and only after its operator is approved.
-//   - A bus is bookable ("live") only when both the operator and the bus are approved.
+//   - Every driver is approved separately too.
+//   - A bus is bookable ("live") only when its operator, the bus itself and its
+//     assigned driver are all approved.
+//   - Every rejection carries a reason the owner sees, so they can fix it and re-apply.
 
 export const REVIEW_STATUS = {
   PENDING: "pending", // waiting for admin review
@@ -11,19 +14,22 @@ export const REVIEW_STATUS = {
   REJECTED: "rejected",
 };
 
+// There is no operator accept/decline step: a booking is confirmed as soon as
+// the traveller pays. Owners keep their buses' availability accurate with the
+// availability calendar instead.
 export const BOOKING_STATUS = {
-  PENDING: "pending", // customer booked, waiting for the operator to confirm
-  CONFIRMED: "confirmed", // operator confirmed; contacts are shared with both sides
-  DECLINED: "declined", // operator could not take the trip
-  CANCELLED: "cancelled", // customer cancelled
-  COMPLETED: "completed", // trip done
+  PAYMENT_PENDING: "payment_pending", // booked, waiting for the traveller to pay
+  CONFIRMED: "confirmed", // paid (advance or full); contacts are shared with both sides
+  CANCELLED: "cancelled", // cancelled by the traveller (refund issued if paid)
+  COMPLETED: "completed", // trip done, owner paid out
 };
 
-// Bookings in these states hold the bus for their dates.
-export const BLOCKING_BOOKING_STATUSES = [BOOKING_STATUS.PENDING, BOOKING_STATUS.CONFIRMED];
+// An unpaid booking holds the bus for this long so two travellers can't pay for the same dates.
+export const PAYMENT_HOLD_MINUTES = 15;
 
 export const STATUS_TONE = {
   pending: "warning",
+  payment_pending: "warning",
   approved: "success",
   rejected: "danger",
   confirmed: "success",
@@ -37,7 +43,7 @@ export const STATUS_TONE = {
 export const STATUS_LABEL = {
   review: { pending: "Under review", approved: "Approved", rejected: "Rejected" },
   booking: {
-    pending: "Awaiting confirmation",
+    payment_pending: "Payment pending",
     confirmed: "Confirmed",
     declined: "Declined",
     cancelled: "Cancelled",

@@ -14,8 +14,10 @@ export default async function AdminLayout({ children }) {
   const nav = [
     { href: "/admin", label: "Overview", icon: "dashboard", exact: true },
     { href: "/admin/operators", label: "Operators", icon: "operators", count: o.operators.pending },
+    { href: "/admin/drivers", label: "Drivers", icon: "drivers", count: o.drivers.pending },
     { href: "/admin/buses", label: "Buses", icon: "bus", count: o.buses.pending },
-    { href: "/admin/bookings", label: "Bookings", icon: "bookings" },
+    { href: "/admin/bookings", label: "Bookings & payments", icon: "bookings" },
+    { href: "/admin/settings", label: "Commission", icon: "settings" },
   ];
 
   return (

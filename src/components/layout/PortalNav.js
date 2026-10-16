@@ -2,11 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Bus, CalendarCheck, UserCheck } from "lucide-react";
+import { LayoutDashboard, Bus, CalendarCheck, UserCheck, IdCard, CalendarDays, Wallet, UserRound, Settings } from "lucide-react";
 import styles from "./Portal.module.css";
 
 // Icons are referenced by name because server layouts can't pass components to a client component.
-const ICONS = { dashboard: LayoutDashboard, bus: Bus, bookings: CalendarCheck, operators: UserCheck };
+const ICONS = {
+  dashboard: LayoutDashboard,
+  bus: Bus,
+  bookings: CalendarCheck,
+  operators: UserCheck,
+  drivers: IdCard,
+  calendar: CalendarDays,
+  earnings: Wallet,
+  profile: UserRound,
+  settings: Settings,
+};
 
 export default function PortalNav({ items }) {
   const pathname = usePathname();

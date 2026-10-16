@@ -237,3 +237,35 @@
     padding: 0;
   }
 }
+
+.driverPhoto {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.payments {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.payments li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.payments li span {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.payments small {
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+  word-break: break-all;
+}

@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { Users, Snowflake, ShieldCheck, CalendarX } from "lucide-react";
-import { getVehicleType } from "@/lib/constants/vehicles";
+import { getVehicleType, labelFor, SEATING } from "@/lib/constants/vehicles";
 import { formatINR, formatNumber } from "@/lib/format";
 import AmenityList from "./AmenityList";
 import BusPhoto from "./BusPhoto";
+import CompareToggle from "@/components/compare/CompareToggle";
 import styles from "./BusCard.module.css";
 
 // `query` carries the customer's trip to the detail page so the fare follows along.
@@ -14,19 +15,20 @@ export default function BusCard({ bus, query = "", highlight = [] }) {
     <div className={styles.wrap}>
       <article className={`${styles.card} ${bus.available ? "" : styles.unavailable}`}>
         <Link href={href} className={styles.media} tabIndex={-1} aria-hidden="true">
-          <BusPhoto type={bus.type} sizes="(max-width: 520px) 100vw, 240px" />
+          <BusPhoto type={bus.type} src={bus.photoUrls?.[0]} alt={bus.title} sizes="(max-width: 520px) 100vw, 240px" />
           <span className={styles.typeTag}>{type?.label.split(" (")[0]}</span>
         </Link>
 
         <div className={styles.body}>
           <h3 className={styles.title}><Link href={href}>{bus.title}</Link></h3>
           <p className={styles.meta}>
-            <span><Users size={14} /> {bus.seats} seats</span>
+            <span><Users size={14} /> {bus.seats} seats · {labelFor(SEATING, bus.seating)}</span>
             <span><Snowflake size={14} /> {bus.ac ? "AC" : "Non-AC"}</span>
             <span>{bus.modelYear} model</span>
             <span className={styles.verified}><ShieldCheck size={14} /> {bus.operator.label}</span>
           </p>
           <AmenityList ids={bus.amenities} limit={5} highlight={highlight} />
+          <div className={styles.compare}><CompareToggle busId={bus.id} /></div>
         </div>
 
         <div className={styles.aside}>
@@ -50,7 +52,7 @@ export default function BusCard({ bus, query = "", highlight = [] }) {
           {bus.available ? (
             <Link href={href} className="btn btn-primary btn-sm">{bus.fare ? "Book this bus" : "View & book"}</Link>
           ) : (
-            <p className={styles.booked}><CalendarX size={14} /> Booked on your dates</p>
+            <p className={styles.booked}><CalendarX size={14} /> Not available on your dates</p>
           )}
         </div>
       </article>

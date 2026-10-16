@@ -1,30 +1,32 @@
 import { requireOperator } from "@/lib/auth";
 import { getOperatorBookings } from "@/lib/data/queries";
+import { todayISO } from "@/lib/format";
 import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import OperatorBookingCard from "@/components/bookings/OperatorBookingCard";
 import styles from "../operator.module.css";
 
-export const metadata = { title: "Bookings" };
+export const metadata = { title: "Trips" };
 
-export default async function OperatorBookingsPage() {
+export default async function OperatorTripsPage() {
   const viewer = await requireOperator("/operator/bookings");
   const bookings = await getOperatorBookings(viewer.id);
+  const today = todayISO();
 
   const groups = [
-    { title: "Needs your response", items: bookings.filter((b) => b.status === "pending") },
-    { title: "Upcoming & ongoing", items: bookings.filter((b) => b.status === "confirmed") },
-    { title: "Past", items: bookings.filter((b) => !["pending", "confirmed"].includes(b.status)).reverse() },
+    { title: "To mark completed", items: bookings.filter((b) => b.status === "confirmed" && b.startDate <= today) },
+    { title: "Upcoming", items: bookings.filter((b) => b.status === "confirmed" && b.startDate > today) },
+    { title: "Past & cancelled", items: bookings.filter((b) => !["confirmed"].includes(b.status)).reverse() },
   ];
 
   return (
     <>
       <PageHeader
-        title="Bookings"
-        description="Confirm requests quickly. Travellers see your details only after you confirm, and you see theirs."
+        title="Trips"
+        description="Travellers pay online and bookings are confirmed instantly. Keep your availability calendar up to date so a bus is never booked on a day it can't run."
       />
       {bookings.length === 0 ? (
-        <EmptyState title="No bookings yet" text="Once your buses are live, traveller bookings appear here for you to confirm." />
+        <EmptyState title="No trips yet" text="Once your buses are live, paid bookings appear here." />
       ) : (
         groups.map((g) =>
           g.items.length ? (

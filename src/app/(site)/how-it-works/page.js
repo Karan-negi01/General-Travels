@@ -22,7 +22,7 @@ const STAGES = [
   {
     title: "1 · Onboarding",
     cells: {
-      operator: "Registers the business with PAN and GSTIN.",
+      operator: "Registers with personal and company details: Aadhaar, PAN, GSTIN and address.",
       admin: "Verifies the operator. This happens only once per operator.",
       customer: null,
     },
@@ -30,24 +30,24 @@ const STAGES = [
   {
     title: "2 · Listing",
     cells: {
-      operator: "Adds each bus: seats, amenities, pickup cities and rate per km.",
-      admin: "Approves every bus on its own after checking RC, insurance, permit and fitness.",
-      customer: "Only approved buses from approved operators appear in search.",
+      operator: "Adds drivers, then each bus with photos, documents, seats, amenities and rate per km.",
+      admin: "Approves every bus and driver after checking RC, PUC, insurance, permit, fitness, ownership and licence. Rejections come with a reason.",
+      customer: "Only approved buses with approved drivers appear in search.",
     },
   },
   {
     title: "3 · Booking",
     cells: {
-      customer: "Searches route, dates and group size, sees the fixed fare and books.",
-      operator: "Gets the request and confirms it, or declines if the bus is unavailable.",
-      admin: "Sees every booking and steps in if needed.",
+      customer: "Searches, compares up to 5 buses, sees the fixed fare and pays online. The booking is confirmed instantly.",
+      operator: "Keeps an availability calendar, so buses booked elsewhere never show up. No accept step needed.",
+      admin: "Sees every booking, payment and commission, and steps in if needed.",
     },
   },
   {
     title: "4 · Trip",
     cells: {
-      customer: "Gets the operator's phone number and vehicle number once confirmed.",
-      operator: "Gets the traveller's contact, runs the trip, then marks it completed.",
+      customer: "Gets the driver's name, photo and phone number and the vehicle number once paid.",
+      operator: "Gets the traveller's contact, runs the trip, marks it completed and is paid out.",
       admin: "Handles support and GST invoicing.",
     },
   },
@@ -56,9 +56,10 @@ const STAGES = [
 const RULES = [
   "An operator is approved once. After that, they can keep adding buses.",
   "Every bus is approved separately, so one operator can have many buses at different stages.",
-  "A bus is bookable only when both the operator and that bus are approved.",
+  "A bus is bookable only when the operator, that bus and its driver are all approved.",
   "Fares are fixed and calculated the same way for everyone, with no negotiation.",
-  "Contact details stay private on both sides until the operator confirms.",
+  "Contact details stay private on both sides until the traveller pays.",
+  "Owners pay a commission on each booking, deducted automatically from the payment.",
 ];
 
 export default function HowItWorksPage() {
@@ -115,9 +116,9 @@ export default function HowItWorksPage() {
           <h2>For travellers</h2>
           <ol>
             <li>Enter pickup city, destination, dates and group size.</li>
-            <li>Compare buses. Each shows its exact total fare for your trip.</li>
-            <li>Sign in with your mobile number and book. No payment is taken now.</li>
-            <li>The operator confirms. You then see their phone number and the vehicle number.</li>
+            <li>Compare up to 5 buses side by side. Each shows its exact total fare for your trip.</li>
+            <li>Sign in with your mobile number and pay 25% or the full fare online. Your booking is confirmed instantly.</li>
+            <li>You then see the driver&apos;s name, photo and phone number and the vehicle number.</li>
           </ol>
           <div className={styles.formula}>
             <p className={styles.formulaTitle}>How the fare is calculated</p>
@@ -134,10 +135,10 @@ export default function HowItWorksPage() {
           <Bus size={22} />
           <h2>For bus operators</h2>
           <ol>
-            <li>Register your business. Your account shows <em>Under review</em> until our team verifies it (once).</li>
-            <li>Add your buses at any time. Each one is reviewed separately.</li>
+            <li>Register with your personal and company details. Your account shows <em>Under review</em> until our team verifies it (once).</li>
+            <li>Add your drivers and buses with their documents. Each one is reviewed separately, and a rejection tells you what to fix.</li>
             <li>When a bus is approved, it goes live in search at the rates you set.</li>
-            <li>Confirm or decline booking requests. After the trip, mark it completed.</li>
+            <li>Block dates when a bus isn&apos;t free. Paid bookings are confirmed automatically. After the trip, mark it completed and get paid.</li>
           </ol>
           <Link href="/become-a-partner" className="btn btn-primary">List your bus</Link>
         </article>
@@ -146,9 +147,9 @@ export default function HowItWorksPage() {
           <UserCheck size={22} />
           <h2>For the General Travels team</h2>
           <ol>
-            <li><strong>Operators queue:</strong> verify new bus owners once (PAN, GSTIN, a call).</li>
-            <li><strong>Buses queue:</strong> approve each bus. Approval unlocks only after its operator is approved.</li>
-            <li><strong>Bookings:</strong> monitor every booking across the platform.</li>
+            <li><strong>Operators queue:</strong> verify new bus owners once (Aadhaar, PAN, GSTIN).</li>
+            <li><strong>Buses and drivers:</strong> approve each one, or reject it with a reason. Bus approval unlocks only after its operator is approved.</li>
+            <li><strong>Bookings and commission:</strong> monitor every booking, payment and payout, and set commission rates.</li>
             <li>Suspend an operator or a bus at any time to take it out of search.</li>
           </ol>
           <Link href="/login?role=admin" className="btn btn-outline">Admin sign in</Link>

@@ -45,3 +45,19 @@ export const TRIP_TYPES = [
 export function labelFor(list, id) {
   return list.find((item) => item.id === id)?.label ?? id;
 }
+
+export const SEATING = [
+  { id: "seater", label: "Seater" },
+  { id: "semi-sleeper", label: "Semi-sleeper" },
+  { id: "sleeper", label: "Sleeper" },
+];
+
+// Documents an owner uploads for every bus. Admin checks each one before approving.
+export const BUS_DOCUMENTS = [
+  { id: "rc", label: "Registration certificate (RC)", short: "RC" },
+  { id: "pollution", label: "Pollution certificate (PUC)", short: "PUC" },
+  { id: "insurance", label: "Insurance", short: "Insurance" },
+  { id: "permit", label: "Tourist / contract carriage permit", short: "Permit" },
+  { id: "fitness", label: "Fitness certificate", short: "Fitness" },
+  { id: "ownership", label: "Proof of ownership", short: "Ownership" },
+];

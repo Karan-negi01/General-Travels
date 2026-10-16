@@ -2,13 +2,14 @@ import Link from "next/link";
 import { ArrowRight, Info } from "lucide-react";
 import { searchBuses } from "@/lib/data/queries";
 import { parseTrip, tripToParams } from "@/lib/pricing";
-import { VEHICLE_TYPES } from "@/lib/constants/vehicles";
+import { VEHICLE_TYPES, SEATING } from "@/lib/constants/vehicles";
 import { isValidAmenity } from "@/lib/constants/amenities";
 import { formatDateRange } from "@/lib/format";
 import TripSearch from "@/components/forms/TripSearch";
 import AmenityPicker from "@/components/vehicles/AmenityPicker";
 import BusCard from "@/components/vehicles/BusCard";
 import EmptyState from "@/components/ui/EmptyState";
+import CompareBar from "@/components/compare/CompareBar";
 import styles from "./results.module.css";
 
 export const metadata = {
@@ -29,6 +30,7 @@ export default async function BusesPage({ searchParams }) {
     city: trip.from || undefined,
     passengers: trip.passengers || undefined,
     type: VEHICLE_TYPES.some((t) => t.id === params.type) ? params.type : undefined,
+    seating: SEATING.some((t) => t.id === params.seating) ? params.seating : undefined,
     ac: params.ac === "on",
     amenities: toArray(params.amenities).filter(isValidAmenity),
   };
@@ -51,7 +53,7 @@ export default async function BusesPage({ searchParams }) {
             </p>
           )}
           <div className={styles.searchCard}>
-            <TripSearch trip={trip} hidden={criteria.type ? { type: criteria.type } : {}} submitLabel="Update" />
+            <TripSearch trip={trip} hidden={Object.fromEntries(Object.entries({ type: criteria.type, seating: criteria.seating }).filter(([, v]) => v))} submitLabel="Update" />
           </div>
         </div>
       </section>
@@ -71,6 +73,13 @@ export default async function BusesPage({ searchParams }) {
               <select id="f-type" name="type" className="select" defaultValue={criteria.type ?? ""}>
                 <option value="">Any vehicle</option>
                 {VEHICLE_TYPES.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
+              </select>
+            </div>
+            <div className="field">
+              <label htmlFor="f-seating">Seating</label>
+              <select id="f-seating" name="seating" className="select" defaultValue={criteria.seating ?? ""}>
+                <option value="">Any seating</option>
+                {SEATING.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
               </select>
             </div>
             <label className="check">
@@ -101,7 +110,7 @@ export default async function BusesPage({ searchParams }) {
               <strong>{complete ? available : buses.length}</strong>{" "}
               {complete ? `bus${available === 1 ? "" : "es"} available` : `bus${buses.length === 1 ? "" : "es"} on General Travels`}
             </p>
-            {complete && <p className="hint">Sorted by total fare · All fares include GST</p>}
+            {complete ? <p className="hint">Sorted by total fare · All fares include GST · Tick “Compare” on up to 5 buses</p> : <p className="hint">Tick “Compare” on up to 5 buses to see them side by side</p>}
           </div>
 
           {buses.length === 0 ? (
@@ -118,6 +127,8 @@ export default async function BusesPage({ searchParams }) {
               ))}
             </div>
           )}
+
+          <CompareBar query={tripQuery} />
 
           <p className={styles.partnerNote}>
             Own a bus? <Link href="/become-a-partner">List it on General Travels <ArrowRight size={14} /></Link>

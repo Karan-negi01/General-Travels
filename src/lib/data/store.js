@@ -58,3 +58,39 @@ export function newId(prefix) {
 export function newBookingRef() {
   return `GT-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
 }
+
+// ---------- Uploaded files (bus photos, documents, driver licences) ----------
+// Bytes live next to the JSON file in `uploads/`; their metadata lives in `db.files`.
+// Move both to object storage (S3 / Cloudflare R2) with the database.
+
+const UPLOAD_DIR = path.join(DB_DIR, "uploads");
+
+export const UPLOAD_RULES = {
+  photo: { types: ["image/jpeg", "image/png", "image/webp"], maxBytes: 5 * 1024 * 1024, label: "JPG, PNG or WebP up to 5 MB" },
+  document: { types: ["application/pdf", "image/jpeg", "image/png", "image/webp"], maxBytes: 5 * 1024 * 1024, label: "PDF, JPG or PNG up to 5 MB" },
+};
+
+// True when the form field holds a file the user actually picked.
+export function hasFile(value) {
+  return typeof value === "object" && value !== null && typeof value.arrayBuffer === "function" && value.size > 0;
+}
+
+// Returns an error message, or null when the file is acceptable.
+export function checkUpload(file, kind) {
+  const rule = UPLOAD_RULES[kind];
+  if (!rule.types.includes(file.type)) return `Upload a ${rule.label}`;
+  if (file.size > rule.maxBytes) return `File is too large (${rule.label})`;
+  return null;
+}
+
+// Writes the bytes and returns the file record; the caller pushes it into `db.files`.
+export async function saveUpload(file, { operatorId, kind }) {
+  const id = newId("file");
+  await fs.mkdir(UPLOAD_DIR, { recursive: true });
+  await fs.writeFile(path.join(UPLOAD_DIR, id), Buffer.from(await file.arrayBuffer()));
+  return { id, operatorId, kind, name: file.name.slice(0, 120), mime: file.type, size: file.size, createdAt: new Date().toISOString() };
+}
+
+export async function readUpload(id) {
+  return fs.readFile(path.join(UPLOAD_DIR, path.basename(id)));
+}

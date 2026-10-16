@@ -74,3 +74,49 @@
   padding: var(--space-4) 0;
   background: linear-gradient(transparent, var(--bg) 30%);
 }
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-3);
+}
+
+.photo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.photo img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.docUploads {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+.uploaded {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--success);
+}
+
+input[type="file"].input {
+  padding: 8px;
+  font-size: var(--text-sm);
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: var(--space-4);
+  }
+}

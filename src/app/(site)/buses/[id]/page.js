@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Users, Snowflake, Calendar, MapPin, ShieldCheck, CalendarX, LogIn } from "lucide-react";
+import { ArrowLeft, Users, Snowflake, Calendar, MapPin, ShieldCheck, CalendarX, LogIn, BedDouble } from "lucide-react";
 import { getPublicBus } from "@/lib/data/queries";
 import { getViewer } from "@/lib/auth";
 import { parseTrip, tripToParams } from "@/lib/pricing";
-import { getVehicleType } from "@/lib/constants/vehicles";
+import { getVehicleType, labelFor, SEATING } from "@/lib/constants/vehicles";
 import { amenitiesByCategory } from "@/lib/constants/amenities";
 import { formatINR, formatDateRange } from "@/lib/format";
 import AmenityIcon from "@/components/vehicles/AmenityIcon";
@@ -12,6 +12,7 @@ import BusPhoto from "@/components/vehicles/BusPhoto";
 import FareBreakdown from "@/components/vehicles/FareBreakdown";
 import TripSearch from "@/components/forms/TripSearch";
 import BookingForm from "@/components/forms/BookingForm";
+import CompareToggle from "@/components/compare/CompareToggle";
 import styles from "./detail.module.css";
 
 export async function generateMetadata({ params }) {
@@ -71,7 +72,7 @@ export default async function BusPage({ params, searchParams }) {
         ) : tooMany ? (
           <p className="alert alert-warning">This bus seats {bus.seats}. <Link href={`/buses?${tripToParams(trip)}`}><u>See bigger buses</u></Link></p>
         ) : !bus.available ? (
-          <p className={`alert alert-error ${styles.unavailable}`}><CalendarX size={16} /> Already booked on these dates. Try other dates or <Link href={`/buses?${tripToParams(trip)}`}><u>another bus</u></Link>.</p>
+          <p className={`alert alert-error ${styles.unavailable}`}><CalendarX size={16} /> Not available on these dates. Try other dates or <Link href={`/buses?${tripToParams(trip)}`}><u>another bus</u></Link>.</p>
         ) : (
           <>
             <FareBreakdown fare={bus.fare} />
@@ -103,19 +104,28 @@ export default async function BusPage({ params, searchParams }) {
       <div className={styles.layout}>
         <div className={styles.main}>
           <div className={styles.gallery}>
-            <BusPhoto type={bus.type} sizes="(max-width: 1000px) 100vw, 760px" priority />
+            <BusPhoto type={bus.type} src={bus.photoUrls[0]} alt={bus.title} sizes="(max-width: 1000px) 100vw, 760px" priority />
           </div>
+          {bus.photoUrls.length > 1 && (
+            <div className={styles.thumbs}>
+              {bus.photoUrls.slice(1).map((src, i) => (
+                <div key={src} className={styles.thumb}><BusPhoto src={src} alt={`${bus.title}, photo ${i + 2}`} sizes="200px" /></div>
+              ))}
+            </div>
+          )}
 
           <div>
             <p className="eyebrow">{type?.label}</p>
             <h1 className={styles.title}>{bus.title}</h1>
             <ul className={styles.facts}>
               <li><Users size={16} /> {bus.seats} seats</li>
+              <li><BedDouble size={16} /> {labelFor(SEATING, bus.seating)}</li>
               <li><Snowflake size={16} /> {bus.ac ? "Air-conditioned" : "Non-AC"}</li>
               <li><Calendar size={16} /> {bus.modelYear} model</li>
               <li><MapPin size={16} /> Based in {bus.baseCity}</li>
               <li className={styles.verified}><ShieldCheck size={16} /> {bus.operator.label}</li>
             </ul>
+            <div style={{ marginTop: 12 }}><CompareToggle busId={bus.id} /></div>
           </div>
 
           <section className={styles.block}>
@@ -144,9 +154,9 @@ export default async function BusPage({ params, searchParams }) {
           <section className={styles.block}>
             <h2 className={styles.h2}>How booking works</h2>
             <ol className={styles.howList}>
-              <li><strong>Book at the fixed fare.</strong> No payment is taken now.</li>
-              <li><strong>The operator confirms</strong> the bus for your dates, usually within a few hours.</li>
-              <li><strong>Details are shared.</strong> You get the operator&apos;s contact and the vehicle number, and they get your pickup details.</li>
+              <li><strong>Book at the fixed fare</strong> and add your pickup address.</li>
+              <li><strong>Pay online</strong>, 25% advance or the full fare. Your booking is confirmed instantly.</li>
+              <li><strong>Details are shared.</strong> You get the driver&apos;s name, photo and phone number and the vehicle number. Cancel before the trip day for a full refund.</li>
             </ol>
           </section>
         </div>
